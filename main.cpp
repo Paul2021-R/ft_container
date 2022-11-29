@@ -123,11 +123,15 @@
 #include "vector.hpp"
 #include <memory>
 #include <typeinfo>
+#include <type_traits>
+#include "utility.hpp"
 
 int main()
 {
-	
-	
+	int a = 10;
+	float b = 10.4;
+	std::cout << std::boolalpha;
+	std::cout << ft::is_integral<float>::value << "\n";
 	// *ait;
 	// ait.operator->();
 
