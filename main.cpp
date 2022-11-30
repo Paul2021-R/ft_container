@@ -126,11 +126,49 @@
 #include <type_traits>
 #include "utility.hpp"
 #include <map>
-#include <exception>
+
 
 int main()
 {
-	
+	// ft::vector<int> a(10, 20);
+	// ft::vector<int> b(20, 42);
+
+	// for(ft::vector<int>::iterator it = a.begin(); it != a.end(); ++it)
+	// 	std::cout << *it << ", ";
+	// std::cout << "\n";
+	// for(ft::vector<int>::iterator it = b.begin(); it != b.end(); ++it)
+	// 	std::cout << *it << ", ";
+	// std::cout << "\n";
+	// std::cout << &a << "\n";
+	// std::cout << &b << "\n";
+
+	// ft::swap(a, b);
+	// for(ft::vector<int>::iterator it = a.begin(); it != a.end(); ++it)
+	// 	std::cout << *it << ", ";
+	// std::cout << "\n";
+	// for(ft::vector<int>::iterator it = b.begin(); it != b.end(); ++it)
+	// 	std::cout << *it << ", ";
+	// std::cout << "\n";
+	// std::cout << &a << "\n";
+	// std::cout << &b << "\n";
+
+
+	ft::vector<int> a(10, 20);
+	ft::vector<int>::iterator it = a.begin();
+	int i = 1;
+	for(; it != a.end(); ++it)
+		*it = i++;
+	it = a.end();
+	ft::vector<int>::reverse_iterator rit(it);
+	std::cout << *--it << "\n";
+	std::cout << *rit << "\n";
+	// std::cout << *rit++ << "\n";
+	// std::cout << *rit++ << "\n";
+	// std::cout << *rit++ << "\n";
+	// std::cout << *rit++ << "\n";
+	// std::cout << *rit++ << "\n";
+
+
 	// std::vector<int> a(10, 20);
 	// std::cout << "size: " << a.size() << ", capacity: " << a.capacity() <<"\n";
 	// a.push_back(222);
