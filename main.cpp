@@ -125,14 +125,47 @@
 #include <typeinfo>
 #include <type_traits>
 #include "utility.hpp"
+#include <map>
+#include <exception>
 
 int main()
 {
-	int a = 10;
-	float b = 10.4;
-	std::cout << std::boolalpha;
-	std::cout << ft::is_integral<float>::value << "\n";
+	
+	// std::vector<int> a(10, 20);
+	// std::cout << "size: " << a.size() << ", capacity: " << a.capacity() <<"\n";
+	// a.push_back(222);
+	// std::cout << "size: " << a.size() << ", capacity: " << a.capacity() <<"\n";
+	// for(int i = 0; i < 10; ++i)
+	// 	a.push_back(i*10);
+	// std::cout << "size: " << a.size() << ", capacity: " << a.capacity() <<"\n";
+	// std::cout << "===============================================\n";
+
+
+	// std::vector<int> b;
+	// std::cout << "size: " << b.size() << ", capacity: " << b.capacity() <<"\n";
+	// b.push_back(1);
+	// std::cout << "size: " << b.size() << ", capacity: " << b.capacity() <<"\n";
+	// for(int i = 0; i < 10; ++i)
+	// {
+	// 	b.push_back(i*10);
+	// 	std::cout << "size: " << b.size() << ", capacity: " << b.capacity() <<"\n";
+	// }
+
+
+	// std::vector<int> a(10 , 10);
+	// std::vector<int> b(a);
+
+	// std::cout << &a << "\n";
+	// std::cout << &b << "\n";
+	// std::cout << &(*a.begin()) << "\n";
+	// std::cout << &(*b.begin()) << "\n";
+
+
+
+
 	// *ait;
+
+
 	// ait.operator->();
 
 
