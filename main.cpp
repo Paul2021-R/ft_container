@@ -116,7 +116,7 @@
 // 	return (0);
 // }
 
-
+#include <stdexcept>
 #include <vector>
 #include <iostream>
 #include <iterator>
@@ -130,6 +130,45 @@
 
 int main()
 {
+	ft::vector<int> a(10, 20);
+	ft::vector<int> b(a);
+
+	// a.reserve(30);
+	// for(int i = 0; i < 10; ++i)
+	// 	std::cout << a.at(i) << ", ";
+	// std::cout << "\n";
+	// std::cout << a.size() << "\n";
+	// std::cout << a.capacity() << "\n";
+
+	// std::cout << b.max_size() << "\n";
+	// a.reserve(a.max_size() + 1);
+	// b.reserve(b.max_size() + 1);
+	// std::cout.imbue(std::locale("en_US.UTF-8")); 
+	// std::cout << a.size() << "\n";
+	// std::cout << b.size() << "\n";
+	// std::cout << a.capacity() << "\n";
+	// std::cout << a.capacity() << "\n";
+
+	// std::vector<char>::reverse_iterator rit = a.rbegin();
+	// std::vector<char>::reverse_iterator rit_ = a.rend();
+
+	// std::cout << rit - rit_ << "\n";
+	// std::cout << typeid(rit.base()).name() << "\n";
+
+	// std::cout << typeid(a.get_allocator()).name() << "\n";
+	// a.assign(20, 'a');
+	// std::cout << a.size() << "\n";
+	// std::cout << a.capacity() << "\n";
+
+	// a.assign(a.begin(), a.end());
+	// std::cout << a.size() << "\n";
+	// std::cout << a.capacity() << "\n";
+
+	// a.assign(1, 'b');
+	// std::cout << a.size() << "\n";
+	// std::cout << a.capacity() << "\n";
+
+
 	// ft::vector<int> a(10, 20);
 	// ft::vector<int> b(20, 42);
 
@@ -152,16 +191,12 @@ int main()
 	// std::cout << &a << "\n";
 	// std::cout << &b << "\n";
 
+	
 
-	ft::vector<int> a(10, 20);
-	ft::vector<int>::iterator it = a.begin();
-	int i = 1;
-	for(; it != a.end(); ++it)
-		*it = i++;
-	it = a.end();
-	ft::vector<int>::reverse_iterator rit(it);
-	std::cout << *--it << "\n";
-	std::cout << *rit << "\n";
+	// characters.assign( {'C', '+', '+', '1', '1'} );
+	// std::cout << characters.size() << "\n";
+	// std::cout << characters.capacity() << "\n";
+
 	// std::cout << *rit++ << "\n";
 	// std::cout << *rit++ << "\n";
 	// std::cout << *rit++ << "\n";

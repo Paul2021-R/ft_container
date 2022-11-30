@@ -6,12 +6,13 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:20 by seojin            #+#    #+#             */
-/*   Updated: 2022/11/30 13:57:39 by seojin           ###   ########.fr       */
+/*   Updated: 2022/11/30 22:22:19 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <memory>
-#include <exception>
+#include <memory>		// for std::allocator
+#include <stdexcept>	// for std::out_of_range, std::length_error
+#include <limits>		// for std::numeric_limits
 #include "random_access_iterator.hpp"
 #include "utility.hpp"
 
@@ -44,12 +45,15 @@ public:
 	explicit vector( const allocator_type& alloc = allocator_type()) :
 				_allocator(alloc), _vector(NULL), _size(0), _capacity(0) {}
 	explicit vector( size_type cnt, const T& value = T(), const Allocator& alloc = Allocator()) :
-				_allocator(alloc), _vector(NULL), _size(cnt), _capacity(cnt)
+				_allocator(alloc), _vector(NULL), _size(0), _capacity(cnt)
 	{
 		_vector = _allocator.allocate(cnt);
-		
-		for(int i = 0; i < cnt; ++i)
-			_allocator.construct(&_vector[i], value);
+		if (value)
+		{
+			_size = cnt;
+			for(int i = 0; i < _size; ++i)
+				_allocator.construct(&_vector[i], value);
+		}
 	}
 	template < class InputIt >
 	vector( InputIt first, InputIt last, const Allocator& alloc = Allocator(), 
@@ -113,7 +117,87 @@ public:
 
 
 
+	/* ====== Assign ====== */
+	void assign( size_type cnt, const_reference value )
+	{
+		if (_capacity < cnt)
+			*this = vector(cnt, value);
+		else
+		{
+			for (iterator it = begin(); it != end(); ++it)
+				_allocator.destroy(it.operator->());
 
+			for (int i = 0; i < cnt; ++i)
+				_allocator.construct(&_vector[i], value);
+			_size = cnt;
+		}
+	}
+
+	template <class InputIt>
+	void assign( InputIt first, InputIt last )
+	{
+		size_type cnt = 0;
+		InputIt it = first;
+		while (it != last)
+		{
+			++cnt;
+			++it;
+		}
+
+		if (_capacity < cnt)
+			*this = vector(first, last);
+		else
+		{
+			it = begin();
+			for(; it != end(); ++it)
+				_allocator.destroy(it.operator->());
+			
+			for (int i = 0; first != last; ++first, ++i)
+				_allocator.construct(&_vector[i], *first);
+		}
+	}
+
+
+	/* ====== get_allocator ====== */
+	allocator_type get_allocator( void ) const { return std::allocator<T>(); }
+
+
+
+
+	/* ====== Element Access ====== */
+	reference at( size_type pos )
+	{
+		if(_size <= pos)
+			throw std::out_of_range("Error: out of range");
+		return *(_vector + pos);
+	}
+
+	const_reference at( size_type pos ) const
+	{
+		if (_size <= pos)
+			throw std::out_of_range("Error: out of range");
+		return *(_vector + pos);
+	}
+
+	reference operator[]( size_type pos ) { return *(_vector + pos); }
+	const_reference operator[]( size_type pos ) const { return *(_vector + pos); }
+
+	reference front( void ) { return *_vector; }
+	const_reference front( void ) const { return *_vector; }
+
+	reference back( void ) { return *(_vector + _size - 1); }
+	const_reference back( void ) const { return *(_vector + _size - 1); }
+
+	pointer data( void ) { return _vector; }
+	const_pointer data( void ) const { return _vector; }
+
+
+
+
+
+
+
+	/* ====== Iterators ====== */
 	const_iterator	begin( void ) const { return const_iterator(_vector); }
 	iterator		begin( void ) { return iterator(_vector); }
 	const_iterator	end( void ) const { return const_iterator(_vector + _size); }
@@ -130,6 +214,52 @@ public:
 
 
 
+	/* ====== Capacity ====== */
+	bool empty( void ) const { return _size == 0; }
+	size_type max_size( void ) const { return _allocator.max_size(); }
+	size_type size( void ) const { return _size; }
+	size_type capacity( void ) const { return _capacity; }
+	void reserve( size_type new_cap )
+	{
+		if ( new_cap > max_size())
+			throw std::length_error("Error: Length error");
+		if ( new_cap > _capacity )
+		{
+			vector tmp(new_cap);
+			iterator it = begin();
+			int i = 0;
+			for (; it != end(); ++it, ++i)
+				tmp._allocator.construct(&tmp._vector[i], *it);
+			tmp._size = i;
+			*this = tmp;
+		}
+	}
+	void clear( void )
+	{
+		iterator it = begin();
+		for(; it != end(); ++it)
+			_allocator.destroy(it.operator->());
+		_size = 0;
+	}
+
+
+
+	
+	
+	
+	
+
+
+
+
+
+
+
+	/* ====== Modifiers ====== */
+	void push_back( const_reference value )
+	{
+		
+	}
 
 
 private:

@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 12:45:15 by seojin            #+#    #+#             */
-/*   Updated: 2022/11/30 14:01:27 by seojin           ###   ########.fr       */
+/*   Updated: 2022/11/30 14:58:06 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,8 @@ public:
 	typedef typename ft::iterator_traits<Iterator>::pointer				pointer;
 	typedef typename ft::iterator_traits<Iterator>::reference			reference;
 
-	pointer base( void ) const { return _ptr; }
+	iterator_type	base( void ) const { return Iterator(); }
+	pointer			getPtr( void ) const { return _ptr; }
 
 	reverse_random_access_iterator( const pointer ptr = NULL ) : _ptr(ptr) {}
 	reverse_random_access_iterator( const reverse_random_access_iterator& other ) : _ptr(other._ptr) {}
@@ -140,10 +141,10 @@ template <class Iterator1, class Iterator2>
 bool operator<=( const reverse_random_access_iterator<Iterator1>& lhs, const reverse_random_access_iterator<Iterator2>& rhs ) { return lhs <= rhs; }
 
 template <class Iterator>
-reverse_random_access_iterator<Iterator> operator+( typename reverse_random_access_iterator<Iterator>::difference_type n, const reverse_random_access_iterator<Iterator>* it ) { return it->base() - n; }
+reverse_random_access_iterator<Iterator> operator+( typename reverse_random_access_iterator<Iterator>::difference_type n, const reverse_random_access_iterator<Iterator>* it ) { return it->getPtr() - n; }
 
 template <class Iterator1, class Iterator2>
-typename reverse_random_access_iterator<Iterator1>::difference_type operator-( const reverse_random_access_iterator<Iterator1>& lhs, const reverse_random_access_iterator<Iterator2>& rhs ) { return rhs.base() - lhs.base(); }
+typename reverse_random_access_iterator<Iterator1>::difference_type operator-( const reverse_random_access_iterator<Iterator1>& lhs, const reverse_random_access_iterator<Iterator2>& rhs ) { return rhs.getPtr() - lhs.getPtr(); }
 
 
 
