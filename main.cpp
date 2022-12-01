@@ -130,13 +130,21 @@
 
 int main()
 {
-	ft::vector<int> a(10, 20);
-	ft::vector<int> b(a);
+	ft::vector<int> a(20, 42);
+	ft::vector<int> b(10, 99);
 
-	// a.reserve(30);
-	// for(int i = 0; i < 10; ++i)
-	// 	std::cout << a.at(i) << ", ";
-	// std::cout << "\n";
+	a.swap(b);
+
+	ft::vector<int>::iterator ait = a.begin();
+	ft::vector<int>::iterator bit = b.begin();
+	std::cout << a.size() << ", " << a.capacity() << "\n";
+	std::cout << b.size() << ", " << b.capacity() << "\n";
+	for(; ait != a.end(); ++ait)
+		std::cout << *ait << ", ";
+	std::cout << "\n";
+	for(; bit != b.end(); ++bit)
+		std::cout << *bit << ", ";
+	std::cout << "\n";
 	// std::cout << a.size() << "\n";
 	// std::cout << a.capacity() << "\n";
 

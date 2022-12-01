@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:20 by seojin            #+#    #+#             */
-/*   Updated: 2022/11/30 22:22:19 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/01 20:03:57 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,12 @@ public:
 	explicit vector( const allocator_type& alloc = allocator_type()) :
 				_allocator(alloc), _vector(NULL), _size(0), _capacity(0) {}
 	explicit vector( size_type cnt, const T& value = T(), const Allocator& alloc = Allocator()) :
-				_allocator(alloc), _vector(NULL), _size(0), _capacity(cnt)
+				_allocator(alloc), _vector(NULL), _size(cnt), _capacity(cnt)
 	{
 		_vector = _allocator.allocate(cnt);
 		if (value)
 		{
-			_size = cnt;
-			for(int i = 0; i < _size; ++i)
+			for(size_type i = 0; i < _size; ++i)
 				_allocator.construct(&_vector[i], value);
 		}
 	}
@@ -63,7 +62,7 @@ public:
 		if (first <= last)
 		{
 			size_t size = 0;
-			iterator tmp = first;
+			InputIt tmp = first;
 			while (tmp != last)
 			{
 				++tmp;
@@ -83,7 +82,7 @@ public:
 	{
 		_vector = _allocator.allocate(_capacity);
 		const_iterator it = other.begin();
-		for(int i = 0; it != other.end(); ++it, ++i)
+		for(size_type i = 0; it != other.end(); ++it, ++i)
 			_allocator.construct(&_vector[i], *it);
 	}
 	~vector()
@@ -109,7 +108,7 @@ public:
 		_capacity = other._capacity;
 		_vector = _allocator.allocate(_capacity);
 		const_iterator it = other.begin();
-		for (int i = 0; it != other.end(); ++it, ++i)
+		for (size_type i = 0; it != other.end(); ++it, ++i)
 			_allocator.construct(&_vector[i], *it);
 
 		return *this;
@@ -127,7 +126,7 @@ public:
 			for (iterator it = begin(); it != end(); ++it)
 				_allocator.destroy(it.operator->());
 
-			for (int i = 0; i < cnt; ++i)
+			for (size_type i = 0; i < cnt; ++i)
 				_allocator.construct(&_vector[i], value);
 			_size = cnt;
 		}
@@ -168,14 +167,14 @@ public:
 	reference at( size_type pos )
 	{
 		if(_size <= pos)
-			throw std::out_of_range("Error: out of range");
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - at, OUT OF RANGE ERR");
 		return *(_vector + pos);
 	}
 
 	const_reference at( size_type pos ) const
 	{
 		if (_size <= pos)
-			throw std::out_of_range("Error: out of range");
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - at, OUT OF RANGE ERR");
 		return *(_vector + pos);
 	}
 
@@ -222,7 +221,7 @@ public:
 	void reserve( size_type new_cap )
 	{
 		if ( new_cap > max_size())
-			throw std::length_error("Error: Length error");
+			throw std::length_error("Error: ft::vector<T, Alloc> - reverse, LENGTH ERR");
 		if ( new_cap > _capacity )
 		{
 			vector tmp(new_cap);
@@ -244,21 +243,254 @@ public:
 
 
 
-	
-	
-	
-	
-
-
-
-
-
-
-
 	/* ====== Modifiers ====== */
+	iterator insert( const_iterator pos, const_reference value )
+	{
+		if ( pos < begin() || pos > end())
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
+
+		difference_type diff = pos - begin();
+
+		if (_size == _capacity)
+			_capacity *= 2;
+		vector tmp(_capacity);
+
+		size_type i = 0;
+		const_iterator it = begin();
+		while (it != pos)
+		{
+			tmp._allocator.construct(&tmp._vector[i], *it);
+			++it;
+			++i;
+		}
+		
+		tmp._allocator.construct(&tmp._vector[i], value);
+		++i;
+
+		while (it != end())
+		{
+			tmp._allocator.construct(&tmp._vector[i], *it);
+			++it;
+			++i;
+		}
+		tmp._size = i;
+		*this = tmp;
+		return (_vector + diff);
+	}
+	void insert( const_iterator pos, size_type count, const_reference value )
+	{
+		if (pos < begin() || pos > end())
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
+
+
+		difference_type diff = pos - begin();
+		while (_capacity < _size + count)
+			_capacity *= 2;
+		
+		vector tmp(_capacity);
+		const_iterator it = begin();
+		size_type i = 0;
+		while (it != pos)
+		{
+			tmp._allocator.construct(&tmp._vector[i], *it);
+			++it;
+			++i;
+		}
+
+		while (count)
+		{
+			tmp._allocator.construct(&tmp._vector[i], value);
+			++i;
+			--count;
+		}
+
+		while (it != end())
+		{
+			tmp._allocator.construct(&tmp._vector[i], *it);
+			++it;
+			++i;
+		}
+		tmp._size = i;
+		*this = tmp;
+	}
+	template <class InputIt>
+	void insert( const_iterator pos, InputIt first, InputIt last )
+	{
+		if (pos < begin() || pos > end())
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
+
+		if (first > last)
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
+		
+		difference_type diff = pos - begin();
+		while (_capacity < _size + last - first)
+			_capacity *= 2;
+		
+		vector tmp(_capacity);
+
+		size_t i = 0;
+		const_iterator it = begin();
+		while (it != pos)
+		{
+			tmp._allocator.construct(&tmp._vector[i], *it);
+			++it;
+			++i;
+		}
+
+		while (first != last)
+		{
+			tmp._allocator.construct(&tmp._vector[i], *first);
+			++first;
+			++i;
+		}
+
+		while (it != end())
+		{
+			tmp._allocator.construct(&tmp._vector[i], *it);
+			++it;
+			++i;
+		}
+
+		tmp._size = i;
+		*this = tmp;
+	}
+
+	iterator erase( iterator pos )
+	{
+		if (pos < begin() || pos > end())
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - erase, OUT OF RANGE ERR");
+
+		vector tmp(_capacity);
+		difference_type diff = pos - begin();
+		size_t i = 0;
+		iterator it = begin();
+		while (it != pos)
+		{
+			tmp._allocator.construct(&tmp._vector[i], *it);
+			++it;
+			++i;
+		}
+		++it;
+		while (it != end())
+		{
+			tmp._allocator.construct(&tmp._vector[i], *it);
+			++it;
+			++i;
+		}
+		*this = tmp;
+		return (iterator(_vector + diff));
+	}
+	iterator erase( iterator first, iterator last )
+	{
+
+		if (first < begin() || last > end())
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
+
+		if (first > last)
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
+
+		difference_type diff = last - begin();
+
+		vector tmp(_capacity);
+		iterator it = begin();
+		size_t i = 0;
+		
+		while (it != first)
+		{
+			tmp._allocator.construct(&tmp._vector[i], *it);
+			++it;
+			++i;
+		}
+
+		while (it != last)
+			++it;
+
+		for(; it != end(); ++it, ++i)
+			tmp._allocator.construct(&tmp._vector[i], *it);
+		
+		tmp._size = i;
+		*this = tmp;
+
+		return iterator(_vector + diff);
+	}
+
 	void push_back( const_reference value )
 	{
-		
+		if (_size == _capacity)
+		{
+			_capacity ? _capacity *= 2 : _capacity = 1;
+
+			vector tmp(_capacity);
+			size_t i = 0;
+			iterator it = begin();
+			for(; it != end(); ++it, ++i)
+				tmp._allocator.construct(&tmp._vector[i], *it);
+			tmp._allocator.construct(&tmp._vector[i], value);
+			++i;
+			tmp._size = i;
+			*this = tmp;
+		}
+		else
+		{
+			_allocator.construct(&_vector[_size], value);
+			_size++;
+		}
+	}
+
+	void pop_back( void )
+	{
+		if (_size)
+		{
+			_allocator.destroy((end() - 1).operator->());
+			--_size;
+		}
+	}
+	void resize( size_type n, value_type value = value_type() )
+	{
+		if (n < 0)
+			throw std::out_of_range("Error: ft::vector<T, Alloc> - reverse, LENGTH ERR");
+		if (n < _capacity)
+		{
+			iterator it = begin();
+			int i = 0;
+			for(; it != end() && i < n; ++it, ++i);
+
+			while (it != end())
+			{
+				_allocator.destroy(it.operator->());
+				++it;
+			}
+
+			while (i < n)
+			{
+				_allocator.construct(&_vector[i], value);
+				++i;
+			}
+			_size = n;
+		}
+		else
+		{
+			while (_capacity < n)
+				_capacity *= 2;
+
+			vector tmp(_capacity);
+			iterator it = begin();
+			size_t i = 0;
+			for(; it != end(); ++it, ++it)
+				tmp._allocator.construct(&tmp._vector[i], *it);
+			for(; i < n; ++i)
+				tmp._allocator.construct(&tmp._vector[i], value);
+
+			tmp._size = n;
+			*this = tmp;
+		}
+	}
+	void swap ( vector& other )
+	{
+		vector tmp(other);
+
+		other = *this;
+		*this = tmp;
 	}
 
 

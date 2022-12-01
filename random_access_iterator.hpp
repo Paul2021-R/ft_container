@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/26 12:45:15 by seojin            #+#    #+#             */
-/*   Updated: 2022/11/30 14:58:06 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/01 18:22:04 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,32 +30,32 @@ public:
 
 	pointer		getPtr( void ) const { return _ptr; }
 
-	bool		operator==( const self& rai ) const { return _ptr == rai._ptr; }
-	bool		operator!=( const self& rai ) const { return _ptr != rai._ptr; }
+	bool			operator==( const self& rai ) const { return _ptr == rai._ptr; }
+	bool			operator!=( const self& rai ) const { return _ptr != rai._ptr; }
 
-	reference	operator*( void ) const { return *_ptr; }
-	pointer		operator->( void ) const { return _ptr; }
+	reference		operator*( void ) const { return *_ptr; }
+	pointer			operator->( void ) const { return _ptr; }
 
-	self&		operator++( void ) { ++_ptr; return *this; }
-	self		operator++( int ) { self tmp; tmp._ptr = _ptr; ++_ptr; return tmp; }
-	self&		operator--( void ) { --_ptr; return *this; }
-	self		operator--( int ) { self tmp; tmp._ptr = _ptr; --_ptr; return tmp; }
+	self&			operator++( void ) { ++_ptr; return *this; }
+	self			operator++( int ) { self tmp; tmp._ptr = _ptr; ++_ptr; return tmp; }
+	self&			operator--( void ) { --_ptr; return *this; }
+	self			operator--( int ) { self tmp; tmp._ptr = _ptr; --_ptr; return tmp; }
 
-	self		operator+( difference_type n ) const { return self(_ptr + n); }
-	self		operator-( const self& rai ) const { return self(_ptr - rai._ptr); }
-	self		operator-( difference_type n ) const { return self(_ptr - n); }
+	self			operator+( difference_type n ) const { return self(_ptr + n); }
+	self			operator-( difference_type n ) const { return self(_ptr - n); }
+	difference_type	operator-( const self& rai ) const { return _ptr - rai._ptr; }
 
 
-	bool		operator<( const self& rai ) const { return _ptr < rai._ptr; }
-	bool		operator>( const self& rai ) const { return _ptr > rai._ptr; }
-	bool		operator<=( const self& rai ) const { return _ptr <= rai._ptr; }
-	bool		operator>=( const self& rai ) const { return _ptr >= rai._ptr; }
-
-	self&		operator+=( difference_type n ) { _ptr += n; return *this; }
-	self&		operator-=( difference_type n ) { _ptr -= n; return *this; }
-
-	reference	operator[]( difference_type n ) const { return *(_ptr + n); }
-	operator	random_access_iterator<const T> () const { return random_access_iterator<const T>(_ptr); }
+	bool			operator<( const self& rai ) const { return _ptr < rai._ptr; }
+	bool			operator>( const self& rai ) const { return _ptr > rai._ptr; }
+	bool			operator<=( const self& rai ) const { return _ptr <= rai._ptr; }
+	bool			operator>=( const self& rai ) const { return _ptr >= rai._ptr; }
+	
+	self&			operator+=( difference_type n ) { _ptr += n; return *this; }
+	self&			operator-=( difference_type n ) { _ptr -= n; return *this; }
+	
+	reference		operator[]( difference_type n ) const { return *(_ptr + n); }
+	operator		random_access_iterator<const T> () const { return random_access_iterator<const T>(_ptr); }
 
 	random_access_iterator( const pointer ptr = NULL ) : _ptr(ptr) {}
 	random_access_iterator( const self& rai ) : _ptr(rai._ptr) {}
