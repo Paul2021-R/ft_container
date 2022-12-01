@@ -126,173 +126,18 @@
 #include <type_traits>
 #include "utility.hpp"
 #include <map>
-
+#include <utility>
+#include <stdlib.h>
 
 int main()
 {
-	ft::vector<int> a(20, 42);
-	ft::vector<int> b(10, 99);
+	int n = 1;
+    int a[5] = {1, 2, 3, 4, 5};
+	ft::pair<int, int> p1 = ft::make_pair(n, a[0]);
+	ft::pair<int, int> p2 = ft::make_pair(n, a[1]);
 
-	a.swap(b);
-
-	ft::vector<int>::iterator ait = a.begin();
-	ft::vector<int>::iterator bit = b.begin();
-	std::cout << a.size() << ", " << a.capacity() << "\n";
-	std::cout << b.size() << ", " << b.capacity() << "\n";
-	for(; ait != a.end(); ++ait)
-		std::cout << *ait << ", ";
-	std::cout << "\n";
-	for(; bit != b.end(); ++bit)
-		std::cout << *bit << ", ";
-	std::cout << "\n";
-	// std::cout << a.size() << "\n";
-	// std::cout << a.capacity() << "\n";
-
-	// std::cout << b.max_size() << "\n";
-	// a.reserve(a.max_size() + 1);
-	// b.reserve(b.max_size() + 1);
-	// std::cout.imbue(std::locale("en_US.UTF-8")); 
-	// std::cout << a.size() << "\n";
-	// std::cout << b.size() << "\n";
-	// std::cout << a.capacity() << "\n";
-	// std::cout << a.capacity() << "\n";
-
-	// std::vector<char>::reverse_iterator rit = a.rbegin();
-	// std::vector<char>::reverse_iterator rit_ = a.rend();
-
-	// std::cout << rit - rit_ << "\n";
-	// std::cout << typeid(rit.base()).name() << "\n";
-
-	// std::cout << typeid(a.get_allocator()).name() << "\n";
-	// a.assign(20, 'a');
-	// std::cout << a.size() << "\n";
-	// std::cout << a.capacity() << "\n";
-
-	// a.assign(a.begin(), a.end());
-	// std::cout << a.size() << "\n";
-	// std::cout << a.capacity() << "\n";
-
-	// a.assign(1, 'b');
-	// std::cout << a.size() << "\n";
-	// std::cout << a.capacity() << "\n";
-
-
-	// ft::vector<int> a(10, 20);
-	// ft::vector<int> b(20, 42);
-
-	// for(ft::vector<int>::iterator it = a.begin(); it != a.end(); ++it)
-	// 	std::cout << *it << ", ";
-	// std::cout << "\n";
-	// for(ft::vector<int>::iterator it = b.begin(); it != b.end(); ++it)
-	// 	std::cout << *it << ", ";
-	// std::cout << "\n";
-	// std::cout << &a << "\n";
-	// std::cout << &b << "\n";
-
-	// ft::swap(a, b);
-	// for(ft::vector<int>::iterator it = a.begin(); it != a.end(); ++it)
-	// 	std::cout << *it << ", ";
-	// std::cout << "\n";
-	// for(ft::vector<int>::iterator it = b.begin(); it != b.end(); ++it)
-	// 	std::cout << *it << ", ";
-	// std::cout << "\n";
-	// std::cout << &a << "\n";
-	// std::cout << &b << "\n";
-
-	
-
-	// characters.assign( {'C', '+', '+', '1', '1'} );
-	// std::cout << characters.size() << "\n";
-	// std::cout << characters.capacity() << "\n";
-
-	// std::cout << *rit++ << "\n";
-	// std::cout << *rit++ << "\n";
-	// std::cout << *rit++ << "\n";
-	// std::cout << *rit++ << "\n";
-	// std::cout << *rit++ << "\n";
-
-
-	// std::vector<int> a(10, 20);
-	// std::cout << "size: " << a.size() << ", capacity: " << a.capacity() <<"\n";
-	// a.push_back(222);
-	// std::cout << "size: " << a.size() << ", capacity: " << a.capacity() <<"\n";
-	// for(int i = 0; i < 10; ++i)
-	// 	a.push_back(i*10);
-	// std::cout << "size: " << a.size() << ", capacity: " << a.capacity() <<"\n";
-	// std::cout << "===============================================\n";
-
-
-	// std::vector<int> b;
-	// std::cout << "size: " << b.size() << ", capacity: " << b.capacity() <<"\n";
-	// b.push_back(1);
-	// std::cout << "size: " << b.size() << ", capacity: " << b.capacity() <<"\n";
-	// for(int i = 0; i < 10; ++i)
-	// {
-	// 	b.push_back(i*10);
-	// 	std::cout << "size: " << b.size() << ", capacity: " << b.capacity() <<"\n";
-	// }
-
-
-	// std::vector<int> a(10 , 10);
-	// std::vector<int> b(a);
-
-	// std::cout << &a << "\n";
-	// std::cout << &b << "\n";
-	// std::cout << &(*a.begin()) << "\n";
-	// std::cout << &(*b.begin()) << "\n";
-
-
-
-
-	// *ait;
-
-
-	// ait.operator->();
-
-
-	// std::vector<int> b(10, 10);
-	// std::vector<int>::const_iterator bi = b.begin();
-
-	// std::vector<int> c;
-	// std::cout << typeid(std::vector<int>::const_iterator::value_type).name() << "\n";
-	// std::cout << typeid(char).name() << "\n";
-
-	// std::cout << "====================\n";
-
-	// std::vector<int> va;
-	// for (int i = 0; i < 10; ++i)
-	// 	va.push_back(i + 1);
-	// std::vector<int>::iterator vai(va.begin()), vaii;
-
-	// vaii = vai + 5;
-	// std::cout << *vaii << "\n";
-	// std::cout << typeid(vai + 5).name() << "\n";
-
-	// vaii = 5 + vai;
-	// std::cout << *vaii << "\n";
-	// std::cout << *(5 + vai) << "\n";
-
-	// (vai == vaii) ? std::cout << "EQUAL\n" : std::cout << "DIFFER\n";
-	// (vai != vaii) ? std::cout << "DIFFER\n" : std::cout << "EQUAL\n";
-	// (vai < vaii) ? std::cout << "DIFFER\n" : std::cout << "EQUAL\n";
-	// (vai > vaii) ? std::cout << "DIFFER\n" : std::cout << "EQUAL\n";
-	// (vai <= vaii) ? std::cout << "DIFFER\n" : std::cout << "EQUAL\n";
-	// (vai >= vaii) ? std::cout << "DIFFER\n" : std::cout << "EQUAL\n";
-
-
-	// std::cout << *vai << "\n";
-	// *vai = 4242;
-	// std::cout << *vai << "\n";
-	// std::cout << vai.operator->() << "\n";
-
-	// std::cout << *(vai++) << "\n";
-	// std::cout << *(++vai) << "\n";
-	// *vai++;
-
-
-	// vai--;
-	// --vai;
-	// *vai--;
-
+	if (p1 >= p2)
+		std::cout << "EQUAL\n";
+	std::cout << "The value of p1 is " << "(" << p1.first << ", " << p1.second << ")\n";
 	return 0;
 }
