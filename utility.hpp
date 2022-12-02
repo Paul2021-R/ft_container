@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:24:15 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/01 21:12:59 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/01 21:14:52 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,9 @@ struct pair
     first_type first;
     second_type second;
 
-    pair() : first(first_type()), second(second_type()) {}
-
 
     /* === Constructors === */
+    pair() : first(first_type()), second(second_type()) {}
     template <class U, class V>
     pair( const pair<U, V>& pr ) : first(pr.first), second(pr.second) {}
     pair( const first_type& a, const second_type& b ) : first(a), second(b) {}
