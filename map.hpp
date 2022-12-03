@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:19 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/01 21:27:19 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/03 10:46:04 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ template<class Key, class T, class Compare = std::less<Key>,
 		class Allocator = std::allocator<ft::pair<const Key, T>>>
 class map
 {
+
+
+
 public:
 	typedef Key														key_type;
 	typedef T														mapped_type;
@@ -37,6 +40,39 @@ public:
 	// typedef typename ft::bidirectional_iterator<const value_type>	const_iterator;
 
 private:
-
+	class Node
+	{
+		value_type	content;
+		Node*		parent;
+		Node*		left;
+		Node*		right;
 	};
+
+
+public:
+	class value_compare
+	{
+		friend class map;
+
+	protected:
+		key_compare	comp;
+		
+		value_compare(Compare c) : comp(c) {}
+
+	public:
+		typedef bool		result_type;
+		typedef value_type	first;
+		typedef value_type	second;
+		bool operator( void )( const vlaue_type& lhs, const value_type& rhs ) { return c( lhs, rhs ); }
+	}
+
+	
+
+
+};
+
+
+
+
+
 }
