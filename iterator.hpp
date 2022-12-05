@@ -6,9 +6,13 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 20:26:20 by seojin            #+#    #+#             */
-/*   Updated: 2022/11/30 19:23:51 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/05 20:31:30 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#ifndef ITERATOR_HPP
+#define ITERATOR_HPP
+
 
 #include <cstddef>
 
@@ -31,8 +35,8 @@ namespace ft
 		typedef typename Iterator::iterator_category	iterator_category;
 	};
 
-	// template<class Iterator>
-	// struct iterator_traits<Iterator*>
+	// template<class T>
+	// struct iterator_traits<T*>
 	// {
 	// 	typedef ptrdiff_t					difference_type;
 	// 	typedef T							value_type;
@@ -53,3 +57,6 @@ namespace ft
 
 	
 }
+
+
+#endif

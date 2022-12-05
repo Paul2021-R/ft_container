@@ -128,16 +128,23 @@
 #include <map>
 #include <utility>
 #include <stdlib.h>
+#include "map.hpp"
 
 int main()
 {
-	int n = 1;
-    int a[5] = {1, 2, 3, 4, 5};
-	ft::pair<int, int> p1 = ft::make_pair(n, a[0]);
-	ft::pair<int, int> p2 = ft::make_pair(n, a[1]);
+	ft::map<int, int> _map;
+	_map.insert(ft::pair<int, int>(10, 42));
+	_map.insert(ft::pair<int, int>(10, 42));
+	_map.insert(ft::pair<int, int>(10, 42));
+	ft::map<int, int>::iterator it = _map.begin();
+	for(; it != _map.end(); ++it)
+		std::cout << (*it).first << "\n";
+	// ++it;
+	// ++it;
+	// ++it;
+	// ++it;
+	// ++it;
 
-	if (p1 >= p2)
-		std::cout << "EQUAL\n";
-	std::cout << "The value of p1 is " << "(" << p1.first << ", " << p1.second << ")\n";
+
 	return 0;
 }
