@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 18:36:15 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/05 20:50:08 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/06 18:35:08 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ namespace ft
 {
 
 
-template <class Key, class T, typename Node>
-struct map_iterator : ft::iterator<ft::bidirectional_iterator_tag, ft::pair<const Key, T> >
+template <class Key, class T, class Node, class Pair>
+struct map_iterator : ft::iterator<ft::bidirectional_iterator_tag, Pair >
 {
 
 
@@ -46,7 +46,7 @@ public:
 	map_iterator(Node* node = NULL, Node* last = NULL) :
 	_node(node), _last(last) {}
 
-	map_iterator(const map_iterator<Key, T, Node>& other) :
+	map_iterator(const map_iterator<Key, T, Node, Pair>& other) :
 	_node(other._node), _last(other._last) {}
 
 	~map_iterator() {}
@@ -224,8 +224,10 @@ public:
 	bool operator!=( const map_iterator& it ) const { return it._node != _node; }
 
 
-	operator map_iterator<Key, const T, Node>() const { return map_iterator<Key, const T, Node>(_node, _last); }
+	operator map_iterator<Key, T, Node, const Pair>() const { return map_iterator<Key, T, Node, const Pair>(_node, _last); }
 
+
+	Node*	getNode( void ) const { return _node; }
 };
 
 

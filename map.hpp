@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:19 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/05 20:46:58 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/06 20:58:30 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,19 +33,19 @@ private:
 	};
 
 public:
-	typedef Key														key_type;
-	typedef T														mapped_type;
-	typedef pair<const key_type, mapped_type>						value_type;
-	typedef Compare													key_compare;
-	typedef Allocator												allocator_type;
-	typedef typename allocator_type::reference						reference;
-	typedef typename allocator_type::const_reference				const_reference;
-	typedef typename allocator_type::pointer						pointer;
-	typedef typename allocator_type::const_pointer					const_pointer;
-	typedef typename allocator_type::size_type						size_type;
-	typedef typename allocator_type::difference_type				difference_type;
-	typedef ft::map_iterator<Key, const T, Node>					iterator;
-	typedef ft::map_iterator<Key, const T, Node>					const_iterator;
+	typedef Key													key_type;
+	typedef T													mapped_type;
+	typedef pair<const key_type, mapped_type>					value_type;
+	typedef Compare												key_compare;
+	typedef Allocator											allocator_type;
+	typedef typename allocator_type::reference					reference;
+	typedef typename allocator_type::const_reference			const_reference;
+	typedef typename allocator_type::pointer					pointer;
+	typedef typename allocator_type::const_pointer				const_pointer;
+	typedef typename allocator_type::size_type					size_type;
+	typedef typename allocator_type::difference_type			difference_type;
+	typedef ft::map_iterator<Key, T, Node, value_type>			iterator;
+	typedef ft::map_iterator<Key, T, Node, const value_type>	const_iterator;
 
 
 
@@ -143,7 +143,7 @@ private:
 
 	void	balanceAdjustment(Node** root, Node* newNode)
 	{
-		size_t	balanceFactor;
+		ssize_t	balanceFactor;
 
 		while (newNode)
 		{
@@ -218,21 +218,21 @@ private:
 
 
 
-	size_t	getBalanceFactor(Node* node)
+	long	getBalanceFactor(Node* node)
 	{
-		size_t leftHeight, rightHeight;
+		long	leftHeight, rightHeight;
 
-		leftHeight = getNodeHeight(node->left, -1);
-		rightHeight = getNodeHeight(node->right, -1);
+		leftHeight = getNodeHeight(node->left, 0);
+		rightHeight = getNodeHeight(node->right, 0);
 
 		return leftHeight - rightHeight;
 	}
 
-	size_t	getNodeHeight(Node* node, size_t height)
+	long	getNodeHeight(Node* node, long height)
 	{
-		size_t leftHeight, rightHeight;
+		int leftHeight, rightHeight;
 
-		if (!node)
+		if (!node || node == _hub)
 			return height;
 		
 		leftHeight = getNodeHeight(node->left, height + 1);
@@ -324,10 +324,10 @@ public:
 	/* ====== Iterators ====== */
 
 
-	const_iterator	begin( void ) const { return const_iterator(_hub->right); }
-	iterator		begin( void ) { return iterator(_hub->right); }
-	const_iterator	end( void ) const { return const_iterator(_hub); }
-	iterator		end( void ) { return iterator(_hub); }
+	const_iterator	begin( void ) const { return const_iterator(_hub->right, _hub); }
+	iterator		begin( void ) { return iterator(_hub->right, _hub); }
+	const_iterator	end( void ) const { return const_iterator(_hub, _hub); }
+	iterator		end( void ) { return iterator(_hub, _hub); }
 
 
 
@@ -357,9 +357,39 @@ public:
 		++_size;
 		return ft::pair<iterator, bool>(iterator(insertNode(_root, value), _hub), true);
 	}
-	
 
-	
+	iterator insert( iterator pos, const value_type& value )
+	{
+		Node* tmp = searchNode(_root, value.first);
+
+		if (tmp)
+			return iterator(tmp, _hub);
+
+		if (pos.getNode() == _hub && value.first < _root->content.first)
+			pos = _hub->right;
+		else if (pos.getNode() == _hub && value.first > _root->content.first)
+			pos = _hub->left;
+
+		if (value.first > pos.getNode()->content.first)
+		{
+			while (pos.getNode()->content.first < value.first && pos.getNode()->right && pos.getNode()->right != _hub)
+				++pos;
+
+			++_size;
+			return iterator(insertNode(pos.getNode(), value), _hub);
+		}
+
+		if (value.first < pos.getNode()->content.first)
+		{
+			while (pos.getNode()->content.first > value.first && pos.getNode()->left && pos.getNode()->left != _hub)
+				--pos;
+
+			++_size;
+			return iterator(insertNode(pos.getNode(), value), _hub);
+		}
+
+		return iterator(insertNode(_root, value), _hub);
+	}
 
 
 };

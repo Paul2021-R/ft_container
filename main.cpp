@@ -133,12 +133,55 @@
 int main()
 {
 	ft::map<int, int> _map;
-	_map.insert(ft::pair<int, int>(10, 42));
-	_map.insert(ft::pair<int, int>(10, 42));
-	_map.insert(ft::pair<int, int>(10, 42));
+	// _map.insert(ft::pair<int, int>(10, 42));
+	// _map.insert(ft::pair<int, int>(11, 43));
+	// _map.insert(ft::pair<int, int>(12, 3));
+	// _map.insert(ft::pair<int, int>(13, 4));
+	// _map.insert(ft::pair<int, int>(9, 49));
+
 	ft::map<int, int>::iterator it = _map.begin();
-	for(; it != _map.end(); ++it)
-		std::cout << (*it).first << "\n";
+	_map.insert(it, ft::pair<int, int>(42, 42));
+	_map.insert(it, ft::pair<int, int>(0, 2));
+	_map.insert(it, ft::pair<int, int>(3, 9));
+	_map.insert(it, ft::pair<int, int>(687, 77));
+	_map.insert(it, ft::pair<int, int>(1, 44));
+	_map.insert(it, ft::pair<int, int>(-49, 89));
+	_map.insert(it, ft::pair<int, int>(20, 74));
+	it = _map.begin();
+	// for(; it != _map.end(); ++it)
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+	std::cout << it->first << ":" << it->second << "\n"; ++it;
+		
+
+
+	// std::cout << (*it).first << ":" << (*it).second << "\n";
+	// std::map<int, int>::iterator bit = _map.end();
+	// std::map<int, int>::const_iterator cit = _map.begin();
+	// for(; it != _map.end(); ++it)
+	// 	std::cout << (*it).first << "\n";
+	// std::cout << (*it).first << ":" << (*it).second << "\n";
+	// ++it;
+	// std::cout << (*it).first << ":" << (*it).second << "\n";
+	// ++it;
+	// std::cout << (*it).first << ":" << (*it).second << "\n";
+	// ++it;
+	// std::cout << (*it).first << ":" << (*it).second << "\n";
+	// ++it;
+	// std::cout << (*it).first << ":" << (*it).second << "\n";
+	// ++it;
+	// std::cout << (*it).first << ":" << (*it).second << "\n";
+	// ++it;
+	// std::cout << (*it).first << ":" << (*it).second << "\n";
 	// ++it;
 	// ++it;
 	// ++it;
