@@ -6,9 +6,13 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:20 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/05 20:33:58 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/08 21:46:04 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+
+#ifndef VECTOR_HPP
+#define VECTOR_HPP
 
 #include <memory>		// for std::allocator
 #include <stdexcept>	// for std::out_of_range, std::length_error
@@ -48,11 +52,11 @@ public:
 				_allocator(alloc), _vector(NULL), _size(cnt), _capacity(cnt)
 	{
 		_vector = _allocator.allocate(cnt);
-		if (value)
-		{
+		// if (value)
+		// {
 			for(size_type i = 0; i < _size; ++i)
 				_allocator.construct(&_vector[i], value);
-		}
+		// }
 	}
 	template < class InputIt >
 	vector( InputIt first, InputIt last, const Allocator& alloc = Allocator(), 
@@ -197,10 +201,10 @@ public:
 
 
 	/* ====== Iterators ====== */
-	const_iterator	begin( void ) const { return const_iterator(_vector); }
-	iterator		begin( void ) { return iterator(_vector); }
-	const_iterator	end( void ) const { return const_iterator(_vector + _size); }
-	iterator		end( void ) { return iterator(_vector + _size); }
+	const_iterator			begin( void ) const { return const_iterator(_vector); }
+	iterator				begin( void ) { return iterator(_vector); }
+	const_iterator			end( void ) const { return const_iterator(_vector + _size); }
+	iterator				end( void ) { return iterator(_vector + _size); }
 	
 	const_reverse_iterator	rbegin( void ) const { return const_reverse_iterator(_vector + _size - 1); }
 	reverse_iterator		rbegin( void ) { return reverse_iterator(_vector + _size - 1); }
@@ -420,15 +424,16 @@ public:
 		{
 			_capacity ? _capacity *= 2 : _capacity = 1;
 
-			vector tmp(_capacity);
+			pointer tmp = _allocator.allocate(_capacity);
 			size_t i = 0;
 			iterator it = begin();
 			for(; it != end(); ++it, ++i)
-				tmp._allocator.construct(&tmp._vector[i], *it);
-			tmp._allocator.construct(&tmp._vector[i], value);
+				_allocator.construct(&tmp[i], *it);
+			_allocator.construct(&tmp[i], value);
 			++i;
-			tmp._size = i;
-			*this = tmp;
+			_size = i;
+			this->~vector();
+			_vector = tmp;
 		}
 		else
 		{
@@ -519,24 +524,116 @@ void swap( vector<T, Alloc>& lhs, vector<T, Alloc>& rhs )
 }
 
 template <class T, class Alloc>
-bool operator==( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs ) { return lhs == rhs; }
+bool operator==( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs )
+{
+	if (lhs.size() != rhs.size())
+		return false;
+
+	typename vector<T, Alloc>::const_iterator lit = lhs.begin();
+	typename vector<T, Alloc>::const_iterator rit = rhs.begin();
+
+	while (lit != lhs.end())
+	{
+		if (*lit != *rit) return false;
+		++lit;
+		++rit;
+	}
+
+	return true;
+}
 
 template <class T, class Alloc>
-bool operator!=( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs ) { return lhs != rhs; }
+bool operator!=( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs )
+{
+	if (lhs.size() != rhs.size())
+		return true;
+	
+	typename vector<T, Alloc>::const_iterator lit = lhs.begin();
+	typename vector<T, Alloc>::const_iterator rit = rhs.begin();
+	
+	while (lit != lhs.end())
+	{
+		if (*lit == *rit) return false;
+		++lit;
+		++rit;
+	}
+	
+	return true;
+}
 
 template <class T, class Alloc>
-bool operator>( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs ) { return lhs > rhs; }
+bool operator>( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs )
+{
+	typename vector<T, Alloc>::const_iterator lit = lhs.begin();
+	typename vector<T, Alloc>::const_iterator rit = rhs.begin();
+
+	while (rit != rhs.end())
+	{
+		if (lit == lhs.end() || *rit > *lit) return false;
+		else if (*lit > *rit) return true;
+		++rit;
+		++lit;
+	}
+
+	return (lit != lhs.end());
+}
 
 template <class T, class Alloc>
-bool operator<( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs ) { return lhs < rhs; }
+bool operator<( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs )
+{
+	typename vector<T, Alloc>::const_iterator lit = lhs.begin();
+	typename vector<T, Alloc>::const_iterator rit = rhs.begin();
+
+	while (lit != lhs.end())
+	{
+		if (rit == rhs.end() || *rit < *lit) return false;
+		else if (*lit < *rit) return true;
+		++rit;
+		++lit;
+	}
+
+	return (rit != rhs.end());
+}
 
 template <class T, class Alloc>
-bool operator>=( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs ) { return lhs >= rhs; }
+bool operator>=( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs )
+{
+	typename vector<T, Alloc>::const_iterator lit = lhs.begin();
+	typename vector<T, Alloc>::const_iterator rit = rhs.begin();
+
+	while (rit != rhs.end())
+	{
+		if (lit == lhs.end() || *lit < *rit) return false;
+		else if (*lit > *rit) return true;
+		++lit;
+		++rit;
+	}
+
+	return true;
+}
+
 
 template <class T, class Alloc>
-bool operator<=( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs ) { return lhs <= rhs; }
+bool operator<=( const vector<T, Alloc>& lhs, const vector<T, Alloc>& rhs )
+{
+	typename vector<T, Alloc>::const_iterator lit = lhs.begin();
+	typename vector<T, Alloc>::const_iterator rit = rhs.begin();
+
+	while (lit != lhs.end())
+	{
+		if (rit == rhs.end() || *lit > *rit) return false;
+		else if (*lit < *rit) return true;
+		++lit;
+		++rit;
+	}
+
+	return true;
+}
 
 
 
 
 }
+
+
+#endif
