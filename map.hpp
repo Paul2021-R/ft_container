@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:19 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/08 20:18:33 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/09 19:37:42 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 #include "utility.hpp"
 #include "map_iterator.hpp"
 #include "algorithm.hpp"
+#include <sys/time.h>
 
 namespace ft
 {
@@ -36,6 +37,7 @@ private:
 		Node*					parent;
 		Node*					left;
 		Node*					right;
+		int						height;
 	};
 
 public:
@@ -77,7 +79,7 @@ private:
 		newNode->parent = NULL;
 		newNode->left = NULL;
 		newNode->right = NULL;
-
+		newNode->height = 0;
 		return newNode;
 	}
 	Node*	searchNode( Node* head, key_type key )
@@ -105,6 +107,7 @@ private:
 			_root->right = _hub;
 			_hub->left = _root;
 			_hub->right = _root;
+			_root->height = 1;
 
 			return _root;
 		}
@@ -112,12 +115,32 @@ private:
 		if (pos->content.first == val.first)
 			return NULL;
 
-
-		if (val.first < pos->content.first && pos->left && pos->left != _hub)
-			return insertNode( pos->left, val );
-		else if (val.first > pos->content.first && pos->right && pos->right != _hub)
-			return insertNode( pos->right, val );
-
+		if (_hub->right->content.first > val.first)
+		{
+			pos = _hub->right;
+		}
+		else if (_hub->left->content.first < val.first)
+		{
+			pos = _hub->left;
+		}
+		else
+		{
+			while (1)
+			{
+				if (pos->content.first > val.first)
+				{
+					if (!pos->left || pos->left == _hub)
+						break;
+					pos = pos->left;
+				}
+				else if (pos->content.first < val.first)
+				{
+					if(!pos->right || pos->right == _hub)
+						break;
+					pos = pos->right;
+				}
+			}
+		}
 
 		Node* node = newNode( val );
 
@@ -139,9 +162,39 @@ private:
 		}
 		node->parent = pos;
 
+		updateHeightUp(node);
 		balanceAdjustment(&_root, node);
 		return node;
 	}
+	void updateHeightUp(Node* node)
+	{
+		int left = 0;
+		int right = 0;
+
+		while (node)
+		{
+			(node->left && node->left != _hub) ? left = node->left->height : left = 0;
+			(node->right && node->right != _hub) ? right = node->right->height : right = 0;
+
+			node->height = left > right ? left + 1 : right + 1;
+			node = node->parent;
+		}
+	}
+	void updateHeightDown(Node* node)
+	{
+		if (!node || node == _hub)
+			return ;
+		
+		int left, right;
+
+		left = getNodeHeight(node->left, 0);
+		right = getNodeHeight(node->right, 0);
+
+		node->height = left > right ? left + 1 : right + 1;
+		updateHeightDown(node->left);
+		updateHeightDown(node->right);
+	}
+
 	bool	deleteNode( Node* pos, key_type key)
 	{
 		
@@ -232,7 +285,7 @@ private:
 			}
 			_pairAllocator.destroy(&tmp->content);
 			_nodeAllocator.deallocate(tmp, 1);
-
+			updateHeightUp(tmpParent);
 			balanceAdjustment(&_root, tmpParent);
 			return true;
 		}
@@ -252,6 +305,7 @@ private:
 			_pairAllocator.destroy(&tmp->content);
 			_nodeAllocator.deallocate(tmp, 1);
 
+			updateHeightUp(tmpParent);
 			balanceAdjustment(&_root, tmpParent);
 			return true;
 		}
@@ -274,6 +328,7 @@ private:
 				tmp->parent->left = tmp->left;
 				_pairAllocator.destroy(&tmp->content);
 				_nodeAllocator.deallocate(tmp, 1);
+				updateHeightUp(tmpParent);
 				balanceAdjustment(&_root, tmpParent);
 				return true;
 			}
@@ -284,6 +339,7 @@ private:
 				tmp->parent->right = tmp->left;
 				_pairAllocator.destroy(&tmp->content);
 				_nodeAllocator.deallocate(tmp, 1);
+				updateHeightUp(tmpParent);
 				balanceAdjustment(&_root, tmpParent);
 				return true;
 			}
@@ -300,6 +356,7 @@ private:
 				tmp->parent->left = tmp->right;
 				_pairAllocator.destroy(&tmp->content);
 				_nodeAllocator.deallocate(tmp, 1);
+				updateHeightUp(tmpParent);
 				balanceAdjustment(&_root, tmpParent);
 				return true;
 			}
@@ -310,6 +367,7 @@ private:
 				tmp->parent->right = tmp->right;
 				_pairAllocator.destroy(&tmp->content);
 				_nodeAllocator.deallocate(tmp, 1);
+				updateHeightUp(tmpParent);
 				balanceAdjustment(&_root, tmpParent);
 				return true;
 			}
@@ -322,14 +380,15 @@ private:
 			_pairAllocator.destroy(&tmp->content);
 			_pairAllocator.construct(&tmp->content, max->content);
 
+			
 			return deleteNode(tmp->left, max->content.first);
 		}
 		return true;
 	}
 	void	balanceAdjustment(Node** root, Node* newNode)
 	{
-		long	balanceFactor;
-
+		int balanceFactor;
+		clock_t start, end;
 		while (newNode)
 		{
 			balanceFactor = getBalanceFactor(newNode);
@@ -354,6 +413,7 @@ private:
 			newNode = newNode->parent;
 		}
 	}
+
 	void	RR(Node** _root, Node* parent)
 	{
 		Node* child = parent->left;
@@ -374,6 +434,7 @@ private:
 			child->parent->right = child;
 		else if (child->parent->left == parent)
 			child->parent->left = child;
+		updateHeightUp(parent);
 	}
 	void	LL(Node** _root, Node* parent)
 	{
@@ -395,17 +456,18 @@ private:
 			child->parent->right = child;
 		else if (child->parent->left == parent)
 			child->parent->left = child;
+		updateHeightUp(parent);
 	}
-	long	getBalanceFactor(Node* node)
+	int	getBalanceFactor(Node* node)
 	{
-		long	leftHeight, rightHeight;
+		int left, right;
 
-		leftHeight = getNodeHeight(node->left, 0);
-		rightHeight = getNodeHeight(node->right, 0);
+		node->left ? left = node->left->height : left = 0;
+		node->right ? right = node->right->height : right = 0;
 
-		return leftHeight - rightHeight;
+		return left - right;
 	}
-	long	getNodeHeight(Node* node, long height)
+	int	getNodeHeight(Node* node, long height)
 	{
 		int leftHeight, rightHeight;
 
@@ -417,6 +479,7 @@ private:
 
 		return leftHeight > rightHeight ? leftHeight : rightHeight;
 	}
+
 	Node*	minNode(Node* node)
 	{
 		if (node->left && node->left != _hub)
@@ -431,8 +494,6 @@ private:
 	}
 
 
-
-
 public:
 	class value_compare
 	{
@@ -440,7 +501,7 @@ public:
 
 	protected:
 		key_compare	comp;
-		
+
 		value_compare(Compare c) : comp(c) {}
 
 	public:
@@ -449,8 +510,6 @@ public:
 		typedef value_type	second;
 		bool operator()( const value_type& lhs, const value_type& rhs ) { return c( lhs, rhs ); }
 	};
-
-
 
 
 
@@ -465,7 +524,6 @@ public:
 		_root->left = _hub;
 		_root->right = _hub;
 	}
-
 	template <class InputIt>
 	map( InputIt first, InputIt last, 
 		const Compare& comp = Compare(),
@@ -479,7 +537,6 @@ public:
 		for (; first != last; ++first)
 			insert(*first);
 	}
-
 	map( const map& other ) :
 		_size(0), _pairAllocator(other._pairAllocator),
 		_nodeAllocator(other._nodeAllocator), _comp(other._comp)
@@ -496,6 +553,15 @@ public:
 
 	~map()
 	{
+		// iterator it = begin();
+		// Node* tmp;
+		// while (it != end())
+		// {
+		// 	tmp = it.getNode();
+		// 	++it;
+		// 	_pairAllocator.destroy(&tmp->content);
+		// 	_nodeAllocator.deallocate(tmp, 1);
+		// }
 		clear();
 		_pairAllocator.destroy(&_hub->content);
 		_nodeAllocator.deallocate(_hub, 1);
@@ -559,13 +625,10 @@ public:
 
 
 
-
-
 	/* ====== Capacity ====== */
 	bool		empty( void ) const { return _size == 0; }
 	size_type	size( void ) const { return _size; }
 	size_type	max_size( void ) const { return _pairAllocator.max_size(); }
-
 
 
 
@@ -726,7 +789,7 @@ public:
 	{
 		iterator it = begin();
 
-		for(; it != _hub; ++it)
+		for(; it != end(); ++it)
 			if (key < it->first)
 				break;
 
@@ -737,7 +800,7 @@ public:
 	{
 		const_iterator it = begin();
 
-		for(; it != _hub; ++it)
+		for(; it != end(); ++it)
 			if (key < it->first)
 				break;
 
@@ -874,6 +937,7 @@ bool operator<=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Co
 
 	return true;
 }
+
 
 
 }

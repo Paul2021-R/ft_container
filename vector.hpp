@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:20 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/08 21:46:04 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/09 20:49:53 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,11 +120,20 @@ public:
 
 
 
+
 	/* ====== Assign ====== */
 	void assign( size_type cnt, const_reference value )
 	{
 		if (_capacity < cnt)
-			*this = vector(cnt, value);
+		{
+			pointer tmp = _allocator.allocate(cnt);
+			size_type i = 0;
+			for(; i < cnt; ++i)
+				_allocator.construct(&tmp[i], value);
+			this->~vector();
+			_capacity = cnt;
+			_vector = tmp;
+		}
 		else
 		{
 			for (iterator it = begin(); it != end(); ++it)
@@ -132,12 +141,12 @@ public:
 
 			for (size_type i = 0; i < cnt; ++i)
 				_allocator.construct(&_vector[i], value);
-			_size = cnt;
 		}
+		_size = cnt;
 	}
-
 	template <class InputIt>
-	void assign( InputIt first, InputIt last )
+	void assign( InputIt first, InputIt last,
+	typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = 0 )
 	{
 		size_type cnt = 0;
 		InputIt it = first;
@@ -148,16 +157,24 @@ public:
 		}
 
 		if (_capacity < cnt)
-			*this = vector(first, last);
+		{
+			pointer tmp = _allocator.allocate(cnt);
+			size_type i = 0;
+			for(; first != last; ++first, ++i)
+				_allocator.construct(&tmp[i], *first);
+			this->~vector();
+			_vector = tmp;
+		}
 		else
 		{
-			it = begin();
-			for(; it != end(); ++it)
-				_allocator.destroy(it.operator->());
+			iterator vit = begin();
+			for(; vit != end(); ++vit)
+				_allocator.destroy(vit.operator->());
 			
 			for (int i = 0; first != last; ++first, ++i)
 				_allocator.construct(&_vector[i], *first);
 		}
+		_size = cnt;
 	}
 
 
@@ -257,28 +274,29 @@ public:
 
 		if (_size == _capacity)
 			_capacity *= 2;
-		vector tmp(_capacity);
+		pointer tmp = _allocator.allocate(_capacity);
 
 		size_type i = 0;
 		const_iterator it = begin();
 		while (it != pos)
 		{
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 			++it;
 			++i;
 		}
 		
-		tmp._allocator.construct(&tmp._vector[i], value);
+		_allocator.construct(&tmp[i], value);
 		++i;
 
 		while (it != end())
 		{
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 			++it;
 			++i;
 		}
-		tmp._size = i;
-		*this = tmp;
+		_size = i;
+		this->_vector();
+		_vector = tmp;
 		return (_vector + diff);
 	}
 	void insert( const_iterator pos, size_type count, const_reference value )
@@ -291,31 +309,32 @@ public:
 		while (_capacity < _size + count)
 			_capacity *= 2;
 		
-		vector tmp(_capacity);
+		pointer tmp = _allocator.allocate(_capacity);
 		const_iterator it = begin();
 		size_type i = 0;
 		while (it != pos)
 		{
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 			++it;
 			++i;
 		}
 
 		while (count)
 		{
-			tmp._allocator.construct(&tmp._vector[i], value);
+			_allocator.construct(&tmp[i], value);
 			++i;
 			--count;
 		}
 
 		while (it != end())
 		{
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 			++it;
 			++i;
 		}
-		tmp._size = i;
-		*this = tmp;
+		_size = i;
+		this->~vector();
+		_vector = tmp;
 	}
 	template <class InputIt>
 	void insert( const_iterator pos, InputIt first, InputIt last )
@@ -330,33 +349,34 @@ public:
 		while (_capacity < _size + last - first)
 			_capacity *= 2;
 		
-		vector tmp(_capacity);
+		pointer tmp = _allocator.allocate(_capacity);
 
 		size_t i = 0;
 		const_iterator it = begin();
 		while (it != pos)
 		{
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 			++it;
 			++i;
 		}
 
 		while (first != last)
 		{
-			tmp._allocator.construct(&tmp._vector[i], *first);
+			_allocator.construct(&tmp[i], *first);
 			++first;
 			++i;
 		}
 
 		while (it != end())
 		{
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 			++it;
 			++i;
 		}
 
-		tmp._size = i;
-		*this = tmp;
+		_size = i;
+		this->~vector();
+		_vector = tmp;
 	}
 
 	iterator erase( iterator pos )
@@ -364,24 +384,48 @@ public:
 		if (pos < begin() || pos > end())
 			throw std::out_of_range("Error: ft::vector<T, Alloc> - erase, OUT OF RANGE ERR");
 
-		vector tmp(_capacity);
+
+		if (pos == begin())
+		{
+			pointer tmp = _vector + 1;
+			_allocator.destroy(begin().operator->());
+			_allocator.deallocate(_vector, 1);
+			--_size;
+			_vector = tmp;
+			return iterator(_vector);
+		}
+
+		if (pos == end())
+			return end();
+
+		if (pos == end() - 1)
+		{
+			--_size;
+			_allocator.destroy(end().operator->());
+			_allocator.deallocate(_vector + _size);
+			return iterator(_vector + _size);
+		}
+
+
 		difference_type diff = pos - begin();
-		size_t i = 0;
+		pointer tmp = _allocator.allocate(_capacity);
+		size_type i = 0;
 		iterator it = begin();
 		while (it != pos)
 		{
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 			++it;
 			++i;
 		}
 		++it;
 		while (it != end())
 		{
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 			++it;
 			++i;
 		}
-		*this = tmp;
+		this->~vector();
+		_vector = tmp;
 		return (iterator(_vector + diff));
 	}
 	iterator erase( iterator first, iterator last )
@@ -393,15 +437,15 @@ public:
 		if (first > last)
 			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
 
-		difference_type diff = last - begin();
+		difference_type diff = first - begin();
 
-		vector tmp(_capacity);
+		pointer tmp = _allocator.allocate(_capacity);
 		iterator it = begin();
 		size_t i = 0;
-		
+
 		while (it != first)
 		{
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 			++it;
 			++i;
 		}
@@ -410,10 +454,11 @@ public:
 			++it;
 
 		for(; it != end(); ++it, ++i)
-			tmp._allocator.construct(&tmp._vector[i], *it);
+			_allocator.construct(&tmp[i], *it);
 		
-		tmp._size = i;
-		*this = tmp;
+		_size = i;
+		this->~vector();
+		_vector = tmp;
 
 		return iterator(_vector + diff);
 	}
@@ -441,7 +486,6 @@ public:
 			_size++;
 		}
 	}
-
 	void pop_back( void )
 	{
 		if (_size)
@@ -452,8 +496,6 @@ public:
 	}
 	void resize( size_type n, value_type value = value_type() )
 	{
-		if (n < 0)
-			throw std::out_of_range("Error: ft::vector<T, Alloc> - reverse, LENGTH ERR");
 		if (n < _capacity)
 		{
 			iterator it = begin();
@@ -478,24 +520,33 @@ public:
 			while (_capacity < n)
 				_capacity *= 2;
 
-			vector tmp(_capacity);
+			pointer tmp = _allocator.allocate(_capacity);
 			iterator it = begin();
 			size_t i = 0;
 			for(; it != end(); ++it, ++it)
-				tmp._allocator.construct(&tmp._vector[i], *it);
+				_allocator.construct(&tmp[i], *it);
 			for(; i < n; ++i)
-				tmp._allocator.construct(&tmp._vector[i], value);
+				_allocator.construct(&tmp[i], value);
 
-			tmp._size = n;
-			*this = tmp;
+			_size = n;
+			this->~vector();
+			_vector = tmp;
 		}
 	}
 	void swap ( vector& other )
 	{
-		vector tmp(other);
+		pointer			_tmpVector = other._vector;
+		size_type		_tmpSize = other._size;
+		size_type		_tmpCapacity = other._capacity;
 
-		other = *this;
-		*this = tmp;
+
+		other._vector = _vector;
+		other._size  = _size;
+		other._capacity = _capacity;
+
+		_vector = _tmpVector;
+		_size = _tmpSize;
+		_capacity = _tmpCapacity;
 	}
 
 
@@ -517,10 +568,7 @@ lhs == "left hand side", hrs == "right hand side" */
 template <class T, class Alloc>
 void swap( vector<T, Alloc>& lhs, vector<T, Alloc>& rhs )
 {
-	vector<T, Alloc> tmp(lhs);
-
-	lhs = rhs;
-	rhs = tmp;
+	lhs.swap(rhs);
 }
 
 template <class T, class Alloc>
