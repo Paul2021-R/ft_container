@@ -248,8 +248,6 @@ int main()
 	std::cout << "\n";
 
 
-	std::vector<int>	_tmpori(_ori);
-	ft::vector<int>		_tmpmy(_my);
 
 
 	std::cout << "\n\n====== VECTOR - CLEAR TEST ======\n";
@@ -277,9 +275,33 @@ int main()
 	std::cout << "my  - size:" << _my.size() << " capacity:" << _my.capacity() << "\n";
 
 
+	_my.clear();
 
-
-	
-
+	ft::vector<int> _my2;
+	for(int i = 0; i < 20; ++i)
+	{
+		_my.push_back(rand() % 50);
+		_my2.push_back(rand() % 50);
+	}
+	std::cout << "\n\n====== VECTOR - SWAP TEST ======\n";
+	mit = _my.begin();
+	std::cout << " my:";
+	for(; mit != _my.end(); ++mit)
+		std::cout << *mit << ", ";
+	std::cout << "\nmy2:";
+	mit = _my2.begin();
+	for(; mit != _my2.end(); ++mit)
+		std::cout << *mit << ", ";
+	std::cout << "\n\n\n";
+	_my.swap(_my2);
+	mit = _my.begin();
+	std::cout << " my:";
+	for(; mit != _my.end(); ++mit)
+		std::cout << *mit << ", ";
+	std::cout << "\nmy2:";
+	mit = _my2.begin();
+	for(; mit != _my2.end(); ++mit)
+		std::cout << *mit << ", ";
+	std::cout << "\n\n\n";
 
 }
