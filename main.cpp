@@ -154,7 +154,7 @@ int main()
 
 
 	std::cout << "\n\n====== VECTOR - PUSH_BACK TEST ======\n";
-	unsigned int val;
+	int val;
 	for(int i = 0; i < 40; ++i)
 	{
 		val = rand() % 50;

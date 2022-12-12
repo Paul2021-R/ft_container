@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:15 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/12 11:03:47 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/12 11:15:27 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ bool operator==( const stack<T, Container>& lhs, const stack<T, Container>& rhs 
 template <class T, class Container>
 bool operator!=( const stack<T, Container>& lhs, const stack<T, Container>& rhs )
 {
-	return lhs.getCtnr() != lhs.getCtnr();
+	return lhs.getCtnr() != rhs.getCtnr();
 }
 
 template <class T, class Container>

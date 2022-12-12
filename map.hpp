@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:19 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/12 10:15:35 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/12 12:29:26 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -399,27 +399,26 @@ private:
 	void	balanceAdjustment(Node** root, Node* newNode)
 	{
 		int balanceFactor;
-		clock_t start, end;
 		while (newNode)
 		{
 			balanceFactor = getBalanceFactor(newNode);
 			if (balanceFactor > 1 && getBalanceFactor(newNode->left) > 0)
 			{
-				RR(&_root, newNode);
+				RR(root, newNode);
 			}
 			else if (balanceFactor > 1)
 			{
-				LL(&_root, newNode->left);
-				RR(&_root, newNode);
+				LL(root, newNode->left);
+				RR(root, newNode);
 			}
 			else if (balanceFactor < -1 && getBalanceFactor(newNode->right) > 0)
 			{
-				RR(&_root, newNode->right);
-				LL(&_root, newNode);
+				RR(root, newNode->right);
+				LL(root, newNode);
 			}
 			else if (balanceFactor < -1)
 			{
-				LL(&_root, newNode);
+				LL(root, newNode);
 			}
 			newNode = newNode->parent;
 		}

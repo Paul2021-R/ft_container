@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:20 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/12 11:00:48 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/12 11:16:56 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -499,7 +499,7 @@ public:
 		if (n < _capacity)
 		{
 			iterator it = begin();
-			int i = 0;
+			size_type i = 0;
 			for(; it != end() && i < n; ++it, ++i);
 
 			while (it != end())
