@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:19 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/09 19:37:42 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/12 10:15:35 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -283,6 +283,17 @@ private:
 				tmp->left->parent = tmp->parent;
 				tmp->left->right = _hub;
 			}
+			else if (!tmp->left && !tmp->right)
+			{
+				if (tmp->content.first <= tmp->parent->content.first)
+				{
+					tmp->parent->left = NULL;
+				}
+				else
+				{
+					tmp->parent->right = NULL;
+				}
+			}
 			_pairAllocator.destroy(&tmp->content);
 			_nodeAllocator.deallocate(tmp, 1);
 			updateHeightUp(tmpParent);
@@ -553,15 +564,6 @@ public:
 
 	~map()
 	{
-		// iterator it = begin();
-		// Node* tmp;
-		// while (it != end())
-		// {
-		// 	tmp = it.getNode();
-		// 	++it;
-		// 	_pairAllocator.destroy(&tmp->content);
-		// 	_nodeAllocator.deallocate(tmp, 1);
-		// }
 		clear();
 		_pairAllocator.destroy(&_hub->content);
 		_nodeAllocator.deallocate(_hub, 1);

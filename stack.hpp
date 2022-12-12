@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:15 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/09 09:23:20 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/12 11:03:47 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ public:
 	const value_type& top() const { return c.back(); }
 
 	void push( const value_type& value ) { c.push_back(value); }
-	void pop() { c.pob_back(); }
+	void pop() { c.pop_back(); }
 
 	const container_type& getCtnr( void ) const { return c; }
 

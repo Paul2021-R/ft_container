@@ -304,4 +304,278 @@ int main()
 		std::cout << *mit << ", ";
 	std::cout << "\n\n\n";
 
+
+
+
+
+
+
+	std::cout << "\n\n\n\n====== MAP - INSERT TEST ======\n";
+	std::map<int, int> __ori;
+	ft::map<int, int> __my;
+
+
+	for(int i = 1; i < 401; ++i)
+	{
+		__ori.insert(std::pair<int, int>(i, i));
+		__my.insert(ft::pair<int, int>(i, i));
+	}
+
+
+
+
+	std::map<int, int>::iterator _oit = __ori.begin();
+	ft::map<int, int>::iterator _mit = __my.begin();
+
+	for (; _oit != __ori.end(); ++_oit, ++_mit)
+	{
+		if (_oit->first != _mit->first)
+			std::cout << "THIS MESSAGE WILL BE PRINTED WEHN FAILED TEST\n";
+	}
+	if (_oit == __ori.end() && _mit == __my.end())
+		std::cout << "OK\n";
+
+	--_oit;
+	--_mit;
+
+	for(; _oit != __ori.begin(); --_oit, --_mit)
+	{
+		if (_oit->first != _mit->first)
+			std::cout << "THIS MESSAGE WILL BE PRINTED WEHN FAILED TEST\n";
+	}
+	if (_oit == __ori.begin() && _mit == __my.begin())
+		std::cout << "OK\n";
+
+
+
+
+
+
+	std::cout << "\n\n====== MAP - REVERSE ITERATOR TEST ======\n";
+	std::map<int, int>::reverse_iterator _orit = __ori.rbegin();
+	ft::map<int, int>::reverse_iterator _mrit = __my.rbegin();
+
+	for (; _orit != __ori.rend(); ++_orit, ++_mrit)
+	{
+		if (_orit->first != _mrit->first)
+			std::cout << "THIS MESSAGE WILL BE PRINTED WEHN FAILED TEST\n";
+	}
+	if (_orit == __ori.rend() && _mrit == __my.rend())
+		std::cout << "OK\n";
+
+	--_orit;
+	--_mrit;
+
+	for(; _orit != __ori.rbegin(); --_orit, --_mrit)
+	{
+		if (_orit->first != _mrit->first)
+			std::cout << "THIS MESSAGE WILL BE PRINTED WEHN FAILED TEST\n";
+	}
+	if (_orit == __ori.rbegin() && _mrit == __my.rbegin())
+		std::cout << "OK\n";
+
+
+
+
+	std::cout << "\n\n====== MAP - CLEAR TEST ======\n";
+	std::cout << "ori size:" << __ori.size();
+	std::cout << "\n my size:" << __my.size();
+	__ori.clear();
+	__my.clear();
+	std::cout << "\n\nAFTER CLEAR\n";
+	std::cout << "ori size:" << __ori.size();
+	std::cout << "\n my size:" << __my.size();
+
+	std::cout << "\n\n====== MAP - EMPTY TEST ======\n";
+	std::cout << std::boolalpha;
+	std::cout << __ori.empty();
+	std::cout << "\n" << __my.empty() << "\n";
+
+
+
+
+	for(int i = 1; i < 401; ++i)
+		{
+			__ori.insert(std::pair<int, int>(i, i));
+			__my.insert(ft::pair<int, int>(i, i));
+		}
+
+	std::cout << "\n\n====== MAP - ERASE TEST ======\n";
+
+	__ori.erase(42);
+	__my.erase(42);
+	_oit = __ori.begin();
+	_mit = __my.begin();
+
+	
+	for(; _oit != __ori.end(); ++_oit, ++_mit)
+	{
+		if (_oit->first != _mit->first)
+			std::cout << "THIS MESSAGE WILL BE PRINTED WEHN FAILED TEST\n";
+	}
+	if (_oit == __ori.end() && _mit == __my.end())
+		std::cout << "OK\n";
+
+
+
+	_oit = __ori.begin();
+	_mit = __my.begin();
+
+	for(int i = 0; i < 340; ++i)
+	{
+		++_oit;
+		++_mit;
+	}
+
+
+	__ori.erase(_oit);
+	__my.erase(_mit);
+
+
+	_oit = __ori.begin();
+	_mit = __my.begin();
+	for(; _oit != __ori.end(); ++_oit, ++_mit)
+	{
+		if (_oit->first != _mit->first)
+			std::cout << "THIS MESSAGE WILL BE PRINTED WEHN FAILED TEST\n";
+	}
+	if (_oit == __ori.end() && _mit == __my.end())
+		std::cout << "OK\n";
+
+
+
+	_oit = __ori.begin();
+	_mit = __my.begin();
+
+	for(int i = 0; i < 340; ++i)
+	{
+		++_oit;
+		++_mit;
+	}
+
+	__ori.erase(__ori.begin(), _oit);
+	__my.erase(__my.begin(), _mit);
+
+
+	_oit = __ori.begin();
+	_mit = __my.begin();
+	for(; _oit != __ori.end(); ++_oit, ++_mit)
+	{
+		if (_oit->first != _mit->first)
+			std::cout << "THIS MESSAGE WILL BE PRINTED WEHN FAILED TEST\n";
+	}
+	if (_oit == __ori.end() && _mit == __my.end())
+		std::cout << "OK\n";
+
+
+
+
+
+
+	std::cout << "\n\n====== MAP - SWAP TEST ======\n";
+	ft::map<int, int> __my2;
+	for(int i = 0; i < 42; ++i)
+	{
+		__my2.insert(ft::pair<int, int>(i, i));
+	}
+
+	_mit = __my.begin();
+	for(; _mit != __my.end(); ++_mit)
+	{
+		std::cout << _mit->first << " ";
+	}
+	std::cout << "\n\n";
+
+	_mit = __my2.begin();
+	for(; _mit != __my2.end(); ++_mit)
+	{
+		std::cout << _mit->first << " ";
+	}
+
+
+	std::cout << "\n";
+	__my.swap(__my2);
+
+	std::cout << "\nAFTER SWAP\n";
+	_mit = __my.begin();
+	for(; _mit != __my.end(); ++_mit)
+	{
+		std::cout << _mit->first << " ";
+	}
+	std::cout << "\n\n";
+
+	_mit = __my2.begin();
+	for(; _mit != __my2.end(); ++_mit)
+	{
+		std::cout << _mit->first << " ";
+	}
+
+
+
+
+
+	std::cout << "\n\n====== MAP - FIND TEST ======\n";
+	for(int i = 0; i < 10; ++i)
+	{
+		val = rand() % 400;
+		std::cout << "find key:" << val << "\n";
+		if (val == __ori.find(val)->first && val == __my.find(val)->first)
+		{
+			std::cout << "ori:exist\n";
+			std::cout << " my:exist\n";
+		}
+		else
+		{
+			std::cout << "ori:not exist\n";
+			std::cout << "my :not exist\n";
+		}
+		std::cout << "-----------------------------------\n";
+	}
+
+
+
+
+
+
+
+
+	std::cout << "\n\n\n\n====== STACK - TEST ======\n";
+	std::stack<int> ___ori;
+	ft::stack<int> ___my;
+
+
+
+	for(int i = 0; i < 20; ++i)
+	{
+		val = rand() % 50;
+		___ori.push(val);
+		___my.push(val);
+	}
+
+	std::cout << "ori size:" << ___ori.size() << "\n";
+	std::cout << " my size:" << ___my.size() << "\n";
+	std::cout << "ori empty:" << ___ori.empty() << "\n";
+	std::cout << " my empty:" << ___my.empty() << "\n";
+	std::cout << "\n\n";
+	std::cout << "ori top:" << ___ori.top();
+	std::cout << "\n my top:" << ___my.top() << "\n";
+	std::cout << "================================================\n\n";
+
+	for(int i = 0; i < 19; ++i)
+	{
+		___ori.pop();
+		___my.pop();
+		std::cout << "ori top:" << ___ori.top() << "\n";
+		std::cout << " my top:" << ___my.top() << "\n";
+		std::cout << "----------------------------------\n";
+	}
+	___ori.pop();
+	___my.pop();
+
+	std::cout << "ori size:" << ___ori.size() << "\n";
+	std::cout << " my size:" << ___my.size() << "\n";
+	std::cout << "ori empty:" << ___ori.empty() << "\n";
+	std::cout << " my empty:" << ___my.empty() << "\n";
+
+	return 0;
 }

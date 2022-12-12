@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 18:36:15 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/08 14:48:48 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/12 09:52:02 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -271,7 +271,7 @@ public:
 	{
 		if (_node && _node == _last)
 		{
-			_node = NULL;
+			_node = _node->right;
 			return *this;
 		}
 
@@ -313,7 +313,7 @@ public:
 
 		if (_node && _node == _last)
 		{
-			_node = NULL;
+			_node = _node->right;
 			return tmp;
 		}
 
@@ -353,7 +353,7 @@ public:
 	{
 		if (_node && _node == _last)
 		{
-			_node = _node->left;
+			_node = NULL;
 			return *this;
 		}
 
@@ -395,7 +395,7 @@ public:
 
 		if (_node && _node == _last)
 		{
-			_node = _node->left;
+			_node = NULL;
 			return tmp;
 		}
 
