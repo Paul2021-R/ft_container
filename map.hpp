@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:19 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/12 12:29:26 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/13 12:01:01 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,14 +112,17 @@ private:
 			return _root;
 		}
 
-		if (pos->content.first == val.first)
+		// if (pos->content.first == val.first)
+		if (!_comp(pos->content.first, val.first) && !_comp(val.first, pos->content.first))
 			return NULL;
 
-		if (_hub->right->content.first > val.first)
+		// if (_hub->right->content.first > val.first)
+		if (_comp(val.first, _hub->right->content.first))
 		{
 			pos = _hub->right;
 		}
-		else if (_hub->left->content.first < val.first)
+		// else if (_hub->left->content.first < val.first)
+		else if (_comp(_hub->left->content.first, val.first))
 		{
 			pos = _hub->left;
 		}
@@ -127,13 +130,15 @@ private:
 		{
 			while (1)
 			{
-				if (pos->content.first > val.first)
+				// if (pos->content.first > val.first)
+				if (_comp(val.first, pos->content.first))
 				{
 					if (!pos->left || pos->left == _hub)
 						break;
 					pos = pos->left;
 				}
-				else if (pos->content.first < val.first)
+				// else if (pos->content.first < val.first)
+				else if (_comp(pos->content.first, val.first))
 				{
 					if(!pos->right || pos->right == _hub)
 						break;
@@ -144,17 +149,21 @@ private:
 
 		Node* node = newNode( val );
 
-		if (node->content.first < pos->content.first && !pos->left)
+		// if (node->content.first < pos->content.first && !pos->left)
+		if (_comp(node->content.first, pos->content.first) && !pos->left)
 			pos->left = node;
-		else if (node->content.first > pos->content.first && !pos->right)
+		// else if (node->content.first > pos->content.first && !pos->right)
+		else if (_comp(pos->content.first, node->content.first) && !pos->right)
 			pos->right = node;
-		else if (node->content.first < pos->content.first && pos->left)
+		// else if (node->content.first < pos->content.first && pos->left)
+		else if (_comp(node->content.first, pos->content.first) && pos->left)
 		{
 			pos->left = node;
 			node->left = _hub;
 			_hub->right = node;
 		}
-		else if (node->content.first > pos->content.first && pos->right)
+		// else if (node->content.first > pos->content.first && pos->right)
+		else if (_comp(pos->content.first, node->content.first) && pos->right)
 		{
 			pos->right = node;
 			node->right = _hub;

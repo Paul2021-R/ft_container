@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 18:09:01 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/08 11:28:29 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/13 11:34:00 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ struct vector_iterator : ft::iterator<ft::random_access_iterator_tag, T>
 {
 
 public:
-	typedef	vector_iterator				self;
+	typedef	vector_iterator						self;
 	typedef typename self::value_type			value_type;
 	typedef typename self::pointer				pointer;
 	typedef typename self::reference			reference;
@@ -34,8 +34,6 @@ public:
 
 	pointer			getPtr( void ) const { return _ptr; }
 
-	bool			operator==( const self& rai ) const { return _ptr == rai._ptr; }
-	bool			operator!=( const self& rai ) const { return _ptr != rai._ptr; }
 
 	reference		operator*( void ) const { return *_ptr; }
 	pointer			operator->( void ) const { return _ptr; }
@@ -49,11 +47,18 @@ public:
 	self			operator-( difference_type n ) const { return self(_ptr - n); }
 	difference_type	operator-( const self& rai ) const { return _ptr - rai._ptr; }
 
-
-	bool			operator<( const self& rai ) const { return _ptr < rai._ptr; }
-	bool			operator>( const self& rai ) const { return _ptr > rai._ptr; }
-	bool			operator<=( const self& rai ) const { return _ptr <= rai._ptr; }
-	bool			operator>=( const self& rai ) const { return _ptr >= rai._ptr; }
+	template <class InputIt>
+	bool			operator==( const InputIt& rai ) const { return _ptr == rai.getPtr(); }
+	template <class InputIt>
+	bool			operator!=( const InputIt& rai ) const { return _ptr != rai.getPtr(); }
+	template <class InputIt>
+	bool			operator<( const InputIt& rai ) const { return _ptr < rai.getPtr(); }
+	template <class InputIt>
+	bool			operator>( const InputIt& rai ) const { return _ptr > rai.getPtr(); }
+	template <class InputIt>
+	bool			operator<=( const InputIt& rai ) const { return _ptr <= rai.getPtr(); }
+	template <class InputIt>
+	bool			operator>=( const InputIt& rai ) const { return _ptr >= rai.getPtr(); }
 	
 	self&			operator+=( difference_type n ) { _ptr += n; return *this; }
 	self&			operator-=( difference_type n ) { _ptr -= n; return *this; }

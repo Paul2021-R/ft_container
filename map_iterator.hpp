@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/05 18:36:15 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/12 09:52:02 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/13 11:38:27 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,8 +227,11 @@ public:
 		return *this;
 	}
 	
-	bool operator==( const map_iterator& it ) const { return it._node == _node; }
-	bool operator!=( const map_iterator& it ) const { return it._node != _node; }
+	template <class InputIt>
+	bool operator==( const InputIt& it ) const { return it.getNode() == _node; }
+
+	template <class InputIt>
+	bool operator!=( const InputIt& it ) const { return it.getNode() != _node; }
 
 
 	operator map_iterator<Key, T, Node, const Pair>() const { return map_iterator<Key, T, Node, const Pair>(_node, _last); }
@@ -236,6 +239,8 @@ public:
 
 	Node*	getNode( void ) const { return _node; }
 };
+
+
 
 
 template <class Iterator, class Node>
@@ -263,6 +268,8 @@ public:
 		_last = other._last;
 		return *this;
 	}
+
+	Node* getNode( void ) const { return _node; }
 
 	reference operator*( void ) const { return _node->content; }
 	pointer operator->( void ) const { return &_node->content; }
@@ -429,11 +436,15 @@ public:
 			return tmp;
 		}
 
+		
 		return *this;
 	}
 
-	bool operator==( const reverse_map_iterator& it ) const { return it._node == _node; }
-	bool operator!=( const reverse_map_iterator& it ) const { return it._node != _node; }
+	template <class InputIt>
+	bool operator==( const InputIt& it ) const { return it.getNode() == _node; }
+	
+	template <class InputIt>
+	bool operator!=( const InputIt& it ) const { return it.getNode() != _node; }
 	
 };
 

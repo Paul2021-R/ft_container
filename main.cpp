@@ -161,8 +161,38 @@ int main()
 		_ori.push_back(val);
 		_my.push_back(val);
 	}
+
 	std::vector<int>::iterator oit = _ori.begin();
+	// std::vector<int>::const_iterator coit = _ori.begin();
 	ft::vector<int>::iterator mit = _my.begin();
+	// ft::vector<int>::const_iterator cmit = _my.begin();
+	// std::map<int, int>::iterator mapIt;
+	// std::map<int, int>::const_iterator cmapIt;
+	// std::map<int, int> _map;
+	// ft::map<int, int>::iterator mmapIt;
+	// ft::map<int, int>::const_iterator mcmapIt;
+	// ft::map<int, int> _mmap;
+
+	// mapIt = _map.begin();
+	// cmapIt = _map.begin();
+	// mmapIt = _mmap.begin();
+	// mcmapIt = _mmap.begin();
+
+	// if (mapIt == cmapIt)
+	// 	std::cout << "Comparable\n";
+
+	// if (mmapIt == mcmapIt)
+	// 	std::cout << "Comparable\n";
+
+	// if (oit == coit)
+	// 	std::cout << "Comparable\n";
+
+	// if (mit == cmit)
+	// 	std::cout << "Comparable\n";
+
+
+
+
 	std::cout << "original-";
 	for(; oit != _ori.end(); ++oit)
 		std::cout << *oit << ", ";
@@ -283,6 +313,7 @@ int main()
 		_my.push_back(rand() % 50);
 		_my2.push_back(rand() % 50);
 	}
+
 	std::cout << "\n\n====== VECTOR - SWAP TEST ======\n";
 	mit = _my.begin();
 	std::cout << " my:";
@@ -293,6 +324,9 @@ int main()
 	for(; mit != _my2.end(); ++mit)
 		std::cout << *mit << ", ";
 	std::cout << "\n\n\n";
+
+	ft::vector<int>::iterator swapIt = _my.begin();
+
 	_my.swap(_my2);
 	mit = _my.begin();
 	std::cout << " my:";
@@ -305,7 +339,12 @@ int main()
 	std::cout << "\n\n\n";
 
 
-
+	std::cout << "\n\n====== VECTOR - AFTER SWAP TEST ======\n";
+	for(; swapIt != _my2.end(); ++swapIt)
+	{
+		std::cout  << *swapIt << ", ";
+	}
+	std::cout << "\n\n";
 
 
 
@@ -315,14 +354,24 @@ int main()
 	ft::map<int, int> __my;
 
 
-	for(int i = 1; i < 401; ++i)
+	for(int i = 200; i < 401; ++i)
 	{
 		__ori.insert(std::pair<int, int>(i, i));
 		__my.insert(ft::pair<int, int>(i, i));
 	}
 
+	ft::map<int, int>::iterator insertIt = __my.begin();
 
+	for(int i = 1; i < 200; ++i)
+	{
+		__ori.insert(std::pair<int, int>(i, i));
+		__my.insert(ft::pair<int, int>(i, i));
+	}
 
+	std::cout << "\n\n====== MAP - AFTER INSERT, ITERATOR TEST ======\n";
+	for(; insertIt != __my.end(); ++insertIt)
+		std::cout << insertIt->first << " ";
+	std::cout << "\n\n\n\n";
 
 	std::map<int, int>::iterator _oit = __ori.begin();
 	ft::map<int, int>::iterator _mit = __my.begin();
@@ -395,17 +444,17 @@ int main()
 
 
 	for(int i = 1; i < 401; ++i)
-		{
-			__ori.insert(std::pair<int, int>(i, i));
-			__my.insert(ft::pair<int, int>(i, i));
-		}
+	{
+		__ori.insert(std::pair<int, int>(i, i));
+		__my.insert(ft::pair<int, int>(i, i));
+	}
 
+	_oit = __ori.begin();
+	_mit = __my.begin();
 	std::cout << "\n\n====== MAP - ERASE TEST ======\n";
 
 	__ori.erase(42);
 	__my.erase(42);
-	_oit = __ori.begin();
-	_mit = __my.begin();
 
 	
 	for(; _oit != __ori.end(); ++_oit, ++_mit)
@@ -447,7 +496,7 @@ int main()
 	_oit = __ori.begin();
 	_mit = __my.begin();
 
-	for(int i = 0; i < 340; ++i)
+	for(int i = 0; i < 300; ++i)
 	{
 		++_oit;
 		++_mit;
@@ -459,15 +508,22 @@ int main()
 
 	_oit = __ori.begin();
 	_mit = __my.begin();
+	insertIt = __my.begin();
 	for(; _oit != __ori.end(); ++_oit, ++_mit)
 	{
 		if (_oit->first != _mit->first)
 			std::cout << "THIS MESSAGE WILL BE PRINTED WEHN FAILED TEST\n";
 	}
 	if (_oit == __ori.end() && _mit == __my.end())
-		std::cout << "OK\n";
+		std::cout << "OK\n\n\n";
 
 
+	std::cout << "====== AFTER ERASE, ITERATOR STILL WORK ======\n";
+	for(; insertIt != __my.end(); ++insertIt)
+		std::cout << insertIt->first << " ";
+	if (insertIt == __my.end())
+		std::cout << "\n\nOK\n";
+	std::cout << "\n\n\n\n";
 
 
 
@@ -493,10 +549,15 @@ int main()
 	}
 
 
+	ft::map<int, int>::iterator mapSwapIt = __my.begin();
+	for (int i = 0; i < 5; ++i)
+		++mapSwapIt;
+
+
 	std::cout << "\n";
 	__my.swap(__my2);
 
-	std::cout << "\nAFTER SWAP\n";
+	std::cout << "\n====== AFTER SWAP ======\n";
 	_mit = __my.begin();
 	for(; _mit != __my.end(); ++_mit)
 	{
@@ -512,6 +573,18 @@ int main()
 
 
 
+	std::cout << "\n\n\n\n====== MAP - AFTER SWAP ITERATOR TEST ======\n";
+	for(; mapSwapIt != __my2.end(); ++mapSwapIt)
+		std::cout << mapSwapIt->first << " ";
+	std::cout << "\n\n\n";
+
+
+
+
+
+
+
+
 
 
 	std::cout << "\n\n====== MAP - FIND TEST ======\n";
@@ -519,7 +592,7 @@ int main()
 	{
 		val = rand() % 400;
 		std::cout << "find key:" << val << "\n";
-		if (val == __ori.find(val)->first && val == __my.find(val)->first)
+		if (val == __ori.find(val)->first && val == __my2.find(val)->first)
 		{
 			std::cout << "ori:exist\n";
 			std::cout << " my:exist\n";

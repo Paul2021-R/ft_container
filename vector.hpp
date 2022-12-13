@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:20 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/12 11:16:56 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/13 11:40:03 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,8 @@ public:
 				_allocator(alloc), _vector(NULL), _size(cnt), _capacity(cnt)
 	{
 		_vector = _allocator.allocate(cnt);
-		// if (value)
-		// {
-			for(size_type i = 0; i < _size; ++i)
-				_allocator.construct(&_vector[i], value);
-		// }
+		for(size_type i = 0; i < _size; ++i)
+			_allocator.construct(&_vector[i], value);
 	}
 	template < class InputIt >
 	vector( InputIt first, InputIt last, const Allocator& alloc = Allocator(), 
