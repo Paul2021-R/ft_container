@@ -12,5 +12,5 @@ int main() {
 	test(1);
 	test(false);
 	test('c');
-	test(A{});
+	// test(A{});
 }
