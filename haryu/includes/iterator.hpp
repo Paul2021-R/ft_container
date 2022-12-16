@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 05:14:37 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/15 22:15:47 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/16 23:55:03 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ namespace ft {
 
 typedef std::input_iterator_tag input_iterator_tag;
 typedef std::output_iterator_tag output_iterator_tag;
-typedef std::forward_iterator_tag foward_iterator_tag;
+typedef std::forward_iterator_tag forward_iterator_tag;
 typedef std::bidirectional_iterator_tag bidirectional_iterator_tag;
 typedef std::random_access_iterator_tag random_access_iterator_tag;
 
@@ -56,9 +56,9 @@ private:
 		char __x;
 		char __y;
 	};
-	template <tupename _U>
+	template <typename _U>
 	static __two __test(...){};
-	template <tupename _U>
+	template <typename _U>
 	static char __test (
 		typename ft::void_t<typename _U::iterator_category>::type * = 0, 
 		typename ft::void_t<typename _U::difference_type>::type * = 0, 
@@ -122,7 +122,7 @@ struct iterator_traits<const _T *> {
 	typedef const _T &reference;
 };
 
-template <typename _Iter, bool = __has_iterator_typedefs<iterator_traits<_Iter>>::value>
+template <typename _Iter, bool = __has_iterator_typedefs<iterator_traits<_Iter> >::value>
 struct __is_iterator : public false_type {
 	typedef void category;
 };
@@ -216,7 +216,7 @@ reference operator*() const {
 	_Iter __temp = current;
 	return *--__temp;
 }
-pointer operator->() const { return &(opreator*()); }
+pointer operator->() const { return &(operator*()); }
 reverse_iterator & operator++() {
 	--current;
 	return *this;
@@ -291,7 +291,7 @@ inline typename iterator_traits<_InputIterator>::difference_type __distance(_Inp
 	return d;
 }
 template <typename _RandIterator>
-inline typename iterator_traits<_RandIterator>::difference_type __distance(_RandIterator __firest, _RandIterator __last, ft::random_access_iterator_tag) {
+inline typename iterator_traits<_RandIterator>::difference_type __distance(_RandIterator __first, _RandIterator __last, ft::random_access_iterator_tag) {
 	return __last - __first;
 }
 template <typename _InputIterator>

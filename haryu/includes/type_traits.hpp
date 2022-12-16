@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 04:57:53 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/15 05:13:30 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/16 23:52:04 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ struct remove_cv {
  * @tparam T 
  */
 template<typename T>
-struct _is_integral : public flase_type {};
+struct _is_integral : public false_type {};
 template <>
 struct _is_integral<bool> : public true_type {};
 template <>
