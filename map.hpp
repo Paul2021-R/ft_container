@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:19 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/13 12:01:01 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/16 17:26:50 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,21 @@ private:
 	};
 
 public:
-	typedef Key													key_type;
-	typedef T													mapped_type;
-	typedef pair<const key_type, mapped_type>					value_type;
-	typedef Compare												key_compare;
-	typedef Allocator											allocator_type;
-	typedef typename allocator_type::reference					reference;
-	typedef typename allocator_type::const_reference			const_reference;
-	typedef typename allocator_type::pointer					pointer;
-	typedef typename allocator_type::const_pointer				const_pointer;
-	typedef typename allocator_type::size_type					size_type;
-	typedef typename allocator_type::difference_type			difference_type;
-	typedef ft::map_iterator<Key, T, Node, value_type>			iterator;
-	typedef ft::map_iterator<Key, T, Node, const value_type>	const_iterator;
-	typedef ft::reverse_map_iterator<iterator, Node>			reverse_iterator;
-	typedef ft::reverse_map_iterator<const_iterator, Node>		const_reverse_iterator;
+	typedef Key																key_type;
+	typedef T																mapped_type;
+	typedef pair<const key_type, mapped_type>								value_type;
+	typedef Compare															key_compare;
+	typedef Allocator														allocator_type;
+	typedef typename allocator_type::reference								reference;
+	typedef typename allocator_type::const_reference						const_reference;
+	typedef typename allocator_type::pointer								pointer;
+	typedef typename allocator_type::const_pointer							const_pointer;
+	typedef typename allocator_type::size_type								size_type;
+	typedef typename allocator_type::difference_type						difference_type;
+	typedef ft::map_iterator<Key, T, Node, value_type, key_compare>			iterator;
+	typedef ft::map_iterator<Key, T, Node, const value_type, key_compare>	const_iterator;
+	typedef ft::reverse_map_iterator<iterator, Node, key_compare>			reverse_iterator;
+	typedef ft::reverse_map_iterator<const_iterator, Node, key_compare>		const_reverse_iterator;
 
 
 private:
@@ -82,7 +82,7 @@ private:
 		newNode->height = 0;
 		return newNode;
 	}
-	Node*	searchNode( Node* head, key_type key )
+	Node*	searchNode( Node* head, const key_type& key ) const
 	{
 		if (!head || head == _hub)
 			return NULL;
@@ -257,7 +257,7 @@ private:
 
 
 		/* 말단 노드인 경우*/
-		if ((!tmp->left || tmp->left == _hub) || (!tmp->right || tmp->right == _hub))
+		if ((!tmp->left || tmp->left == _hub) && (!tmp->right || tmp->right == _hub))
 		{
 			/*
 			1. 왼쪽 말단 노드에 자식이 없는 경우.
@@ -334,15 +334,15 @@ private:
 
 		/*
 		1. 왼쪽 자식만 있는 경우.
-		2. 오른쪽 자식만 있는 경우.
-		3. 둘 다 있는 경우.
+		3. 오른쪽 자식만 있는 경우.
+		4. 둘 다 있는 경우.
 		*/
 
 		if (tmp->left && tmp->left != _hub && !tmp->right)
 		{
 			Node* tmpParent = tmp->parent;
 
-			if (tmp->content.first < tmp->parent->content.first)
+			if (tmp->content.first <= tmp->parent->content.first)
 			{
 				tmp->left->parent = tmp->parent;
 				tmp->parent->left = tmp->left;
@@ -365,6 +365,67 @@ private:
 			}
 		}
 
+		if (tmp->left && tmp->left == _hub && tmp->right)
+		{
+			Node* tmpParent = tmp->parent;
+
+			if (tmp->content.first <= tmp->parent->content.first)
+			{
+				tmpParent->left = tmp->right;
+				tmp->right->left = _hub;
+				tmp->right->parent = tmpParent;
+				_hub->right = tmp->right;
+				_pairAllocator.destroy(&tmp->content);
+				_nodeAllocator.deallocate(tmp, 1);
+				updateHeightUp(tmpParent);
+				balanceAdjustment(&_root, tmpParent);
+				return true;
+			}
+
+			if (tmp->content.first > tmp->parent->content.first)
+			{
+				tmpParent->right = tmp->right;
+				tmp->right->left = _hub;
+				tmp->right->parent = tmpParent;
+				_hub->right = tmp->right;
+				_pairAllocator.destroy(&tmp->content);
+				_nodeAllocator.deallocate(tmp, 1);
+				updateHeightUp(tmpParent);
+				balanceAdjustment(&_root, tmpParent);
+				return true;
+			}
+		}
+
+		if (tmp->right && tmp->right == _hub && tmp->left)
+		{
+			Node* tmpParent = tmp->parent;
+
+			if (tmp->content.first <= tmp->parent->content.first)
+			{
+				tmpParent->left = tmp->left;
+				tmp->left->right = _hub;
+				tmp->left->parent = tmpParent;
+				_hub->left = tmp->right;
+				_pairAllocator.destroy(&tmp->content);
+				_nodeAllocator.deallocate(tmp, 1);
+				updateHeightUp(tmpParent);
+				balanceAdjustment(&_root, tmpParent);
+				return true;
+			}
+
+			if (tmp->content.first > tmp->parent->content.first)
+			{
+				tmpParent->right = tmp->left;
+				tmp->left->right = _hub;
+				tmp->left->parent = tmpParent;
+				_hub->left = tmp->right;
+				_pairAllocator.destroy(&tmp->content);
+				_nodeAllocator.deallocate(tmp, 1);
+				updateHeightUp(tmpParent);
+				balanceAdjustment(&_root, tmpParent);
+				return true;
+			}
+		}
 
 		if (tmp->right && tmp->right != _hub && !tmp->left)
 		{
@@ -477,7 +538,7 @@ private:
 			child->parent->left = child;
 		updateHeightUp(parent);
 	}
-	int	getBalanceFactor(Node* node)
+	int		getBalanceFactor(Node* node)
 	{
 		int left, right;
 
@@ -486,7 +547,7 @@ private:
 
 		return left - right;
 	}
-	int	getNodeHeight(Node* node, long height)
+	int		getNodeHeight(Node* node, long height)
 	{
 		int leftHeight, rightHeight;
 
@@ -527,7 +588,10 @@ public:
 		typedef bool		result_type;
 		typedef value_type	first;
 		typedef value_type	second;
-		bool operator()( const value_type& lhs, const value_type& rhs ) { return c( lhs, rhs ); }
+		bool operator()( const value_type& lhs, const value_type& rhs ) const
+		{
+			return comp( lhs.first, rhs.first );
+		}
 	};
 
 
@@ -558,7 +622,7 @@ public:
 	}
 	map( const map& other ) :
 		_size(0), _pairAllocator(other._pairAllocator),
-		_nodeAllocator(other._nodeAllocator), _comp(other._comp)
+		_comp(other._comp), _nodeAllocator(other._nodeAllocator)
 	{
 		_hub = newNode(ft::pair<const key_type, mapped_type>());
 		_root = _hub;
@@ -581,10 +645,10 @@ public:
 	{
 		clear();
 
-		iterator it = other.begin();
+		const_iterator it = other.begin();
 		for (; it != other.end(); ++it)
 			insert(*it);
-
+		_size = other._size;
 		return *this;
 	}
 
@@ -663,10 +727,13 @@ public:
 		_size -= result;
 		return result;
 	}
+
+
 	void clear( void )
 	{
 		erase(begin(), end());
 	}
+
 	void swap( map& other )
 	{
 		Node* _tmpRoot = other._root;
@@ -753,13 +820,17 @@ public:
 
 
 	/* ====== LookUp ====== */
+	size_type count( const Key& key )
+	{
+		Node* tmp = searchNode(_root, key);
+
+		return tmp ? 1 : 0;
+	}
 	size_type count( const Key& key ) const
 	{
 		Node* tmp = searchNode(_root, key);
 
-		if (tmp)
-			return 1;
-		return 0;
+		return tmp ? 1 : 0;
 	}
 	iterator find( const Key& key )
 	{
@@ -791,7 +862,8 @@ public:
 	{
 		const_iterator it = begin();
 
-		for(; it !=end(), it->first < key; ++it);
+		while ( it != end() && it->first < key)
+			++it;
 
 		return it;
 	}
@@ -847,12 +919,12 @@ bool operator==( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Co
 {
 	if (lhs.size() != rhs.size())
 		return false;
-	typename ft::map<Key, T, Compare, Alloc>::iterator lit = lhs.begin();
-	typename ft::map<Key, T, Compare, Alloc>::iterator rit = rhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator lit = lhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator rit = rhs.begin();
 
 	for(; lit != lhs.end(); ++lit, ++rit)
 	{
-		if (lit->content != rit->content)
+		if (lit->first != rit->first)
 			return false;
 	}
 
@@ -864,12 +936,12 @@ bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Co
 {
 	if (lhs.size() != rhs.size())
 		return true;
-	typename ft::map<Key, T, Compare, Alloc>::iterator lit = lhs.begin();
-	typename ft::map<Key, T, Compare, Alloc>::iterator rit = rhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator lit = lhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator rit = rhs.begin();
 
 	for(; lit != lhs.end(); ++lit, ++rit)
 	{
-		if (lit->content == rit->content)
+		if (lit->first == rit->first)
 			return false;
 	}
 
@@ -879,8 +951,8 @@ bool operator!=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Co
 template< class Key, class T, class Compare, class Alloc >
 bool operator>( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
 {
-	typename ft::map<Key, T, Compare, Alloc>::iterator lit = lhs.begin();
-	typename ft::map<Key, T, Compare, Alloc>::iterator rit = rhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator lit = lhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator rit = rhs.begin();
 
 	while (rit != rhs.end())
 	{
@@ -889,6 +961,8 @@ bool operator>( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Com
 		else if (rit->first < lit->first) return true;
 		else if (rit->first == lit->first && rit->second > lit->second) return false;
 		else if (rit->first == lit->first && rit->second < lit->second) return true;
+		++rit;
+		++lit;
 	}
 
 	return (lit != lhs.end());
@@ -897,34 +971,38 @@ bool operator>( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Com
 template< class Key, class T, class Compare, class Alloc >
 bool operator<( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
 {
-	typename ft::map<Key, T, Compare, Alloc>::iterator lit = lhs.begin();
-	typename ft::map<Key, T, Compare, Alloc>::iterator rit = rhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator lit = lhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator rit = rhs.begin();
 
 	while (rit != rhs.end())
 	{
-		if (lit == lhs.end()) return false;
+		if (lit == lhs.end()) return true;
 		else if (rit->first < lit->first) return false;
 		else if (rit->first > lit->first) return true;
 		else if (rit->first == lit->first && rit->second < lit->second) return false;
 		else if (rit->first == lit->first && rit->second > lit->second) return true;
+		++rit;
+		++lit;
 	}
 
-	return (lit != lhs.end());
+	return (rit != rhs.end());
 }
 
 template< class Key, class T, class Compare, class Alloc >
 bool operator>=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
 {
-	typename ft::map<Key, T, Compare, Alloc>::iterator lit = lhs.begin();
-	typename ft::map<Key, T, Compare, Alloc>::iterator rit = rhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator lit = lhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator rit = rhs.begin();
 
 	while (rit != rhs.end())
 	{
 		if (lit == lhs.end()) return false;
 		else if (rit->first > lit->first) return false;
-		else if (rit->first <= lit->first) return true;
+		else if (rit->first < lit->first) return true;
 		else if (rit->first == lit->first && rit->second > lit->second) return false;
-		else if (rit->first == lit->first && rit->second <= lit->second) return true;
+		else if (rit->first == lit->first && rit->second < lit->second) return true;
+		++rit;
+		++lit;
 	}
 
 	return true;
@@ -933,19 +1011,21 @@ bool operator>=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Co
 template< class Key, class T, class Compare, class Alloc >
 bool operator<=( const ft::map<Key,T,Compare,Alloc>& lhs, const ft::map<Key,T,Compare,Alloc>& rhs )
 {
-	typename ft::map<Key, T, Compare, Alloc>::iterator lit = lhs.begin();
-	typename ft::map<Key, T, Compare, Alloc>::iterator rit = rhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator lit = lhs.begin();
+	typename ft::map<Key, T, Compare, Alloc>::const_iterator rit = rhs.begin();
 
 	while (rit != rhs.end())
 	{
-		if (lit == lhs.end()) return false;
+		if (lit == lhs.end()) return true;
 		else if (rit->first < lit->first) return false;
-		else if (rit->first >= lit->first) return true;
+		else if (rit->first > lit->first) return true;
 		else if (rit->first == lit->first && rit->second < lit->second) return false;
-		else if (rit->first == lit->first && rit->second >= lit->second) return true;
+		else if (rit->first == lit->first && rit->second > lit->second) return true;
+		++rit;
+		++lit;
 	}
 
-	return true;
+	return (lit == lhs.end());
 }
 
 

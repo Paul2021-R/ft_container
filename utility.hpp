@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 15:24:15 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/13 11:09:07 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/15 21:58:31 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ struct pair
 
 
     /* === Copy Assignment === */
-    pair& operator=( const pair& other ) { first = other.first; second = other.second; }
+    pair& operator=( const pair& other ) { first = other.first; second = other.second; return *this; }
     
 };
 

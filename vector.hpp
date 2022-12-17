@@ -6,7 +6,7 @@
 /*   By: seojin <seojin@student.42seoul.kr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/24 07:16:20 by seojin            #+#    #+#             */
-/*   Updated: 2022/12/13 11:40:03 by seojin           ###   ########.fr       */
+/*   Updated: 2022/12/16 11:34:33 by seojin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@
 #include <limits>		// for std::numeric_limits
 #include "vector_iterator.hpp"
 #include "utility.hpp"
+
+
 
 namespace ft
 {
@@ -60,8 +62,8 @@ public:
 			typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = NULL) :
 			_allocator(alloc), _vector(NULL), _size(0), _capacity(0)
 	{
-		if (first <= last)
-		{
+		// if (first <= last)
+		// {
 			size_t size = 0;
 			InputIt tmp = first;
 			while (tmp != last)
@@ -76,7 +78,7 @@ public:
 
 			for(int i = 0; first != last; ++first, ++i)
 				_allocator.construct(&_vector[i], *first);
-		}
+		// }
 	}
 	vector( const vector& other ) :
 			_allocator(other._allocator), _vector(NULL), _size(other._size), _capacity(other._capacity)
@@ -129,6 +131,7 @@ public:
 				_allocator.construct(&tmp[i], value);
 			this->~vector();
 			_capacity = cnt;
+			_size = cnt;
 			_vector = tmp;
 		}
 		else
@@ -136,10 +139,11 @@ public:
 			for (iterator it = begin(); it != end(); ++it)
 				_allocator.destroy(it.operator->());
 
-			for (size_type i = 0; i < cnt; ++i)
+			size_type i = 0;
+			for (; i < cnt; ++i)
 				_allocator.construct(&_vector[i], value);
+			_size = i;
 		}
-		_size = cnt;
 	}
 	template <class InputIt>
 	void assign( InputIt first, InputIt last,
@@ -159,7 +163,9 @@ public:
 			size_type i = 0;
 			for(; first != last; ++first, ++i)
 				_allocator.construct(&tmp[i], *first);
-			this->~vector();
+			if (_size)
+				this->~vector();
+			_capacity = cnt;
 			_vector = tmp;
 		}
 		else
@@ -220,7 +226,7 @@ public:
 	const_iterator			end( void ) const { return const_iterator(_vector + _size); }
 	iterator				end( void ) { return iterator(_vector + _size); }
 	
-	const_reverse_iterator	rbegin( void ) const { return const_reverse_iterator(_vector + _size - 1); }
+	// const_reverse_iterator	rbegin( void ) const { return const_reverse_iterator(_vector + _size - 1); }
 	reverse_iterator		rbegin( void ) { return reverse_iterator(_vector + _size - 1); }
 	const_reverse_iterator	rend( void ) const { return const_reverse_iterator(_vector - 1); }
 	reverse_iterator		rend( void ) { return reverse_iterator(_vector - 1); }
@@ -292,7 +298,7 @@ public:
 			++i;
 		}
 		_size = i;
-		this->_vector();
+		this->~vector();
 		_vector = tmp;
 		return (_vector + diff);
 	}
@@ -302,10 +308,12 @@ public:
 			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
 
 
-		difference_type diff = pos - begin();
+		// difference_type diff = pos - begin();
 		while (_capacity < _size + count)
-			_capacity *= 2;
-		
+		{
+			_capacity = _capacity ? _capacity *2 : 1;
+		}
+
 		pointer tmp = _allocator.allocate(_capacity);
 		const_iterator it = begin();
 		size_type i = 0;
@@ -333,18 +341,28 @@ public:
 		this->~vector();
 		_vector = tmp;
 	}
+	
 	template <class InputIt>
-	void insert( const_iterator pos, InputIt first, InputIt last )
+	void insert( const_iterator pos, InputIt first, InputIt last,
+	typename ft::enable_if<!ft::is_integral<InputIt>::value>::type* = NULL )
 	{
 		if (pos < begin() || pos > end())
 			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
 
-		if (first > last)
-			throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
+		// if (first > last)
+		// 	throw std::out_of_range("Error: ft::vector<T, Alloc> - insert, OUT OF RANGE ERR");
 		
-		difference_type diff = pos - begin();
-		while (_capacity < _size + last - first)
-			_capacity *= 2;
+		// difference_type diff = pos - begin();
+
+		InputIt	tmpIt = first;
+		size_t	tmpSize = 0;
+		while (tmpIt != last)
+		{
+			++tmpIt;
+			++tmpSize;
+		}
+		while (_capacity < _size + tmpSize)
+			_capacity = _capacity ? _capacity * 2 : 1;
 		
 		pointer tmp = _allocator.allocate(_capacity);
 
@@ -381,29 +399,6 @@ public:
 		if (pos < begin() || pos > end())
 			throw std::out_of_range("Error: ft::vector<T, Alloc> - erase, OUT OF RANGE ERR");
 
-
-		if (pos == begin())
-		{
-			pointer tmp = _vector + 1;
-			_allocator.destroy(begin().operator->());
-			_allocator.deallocate(_vector, 1);
-			--_size;
-			_vector = tmp;
-			return iterator(_vector);
-		}
-
-		if (pos == end())
-			return end();
-
-		if (pos == end() - 1)
-		{
-			--_size;
-			_allocator.destroy(end().operator->());
-			_allocator.deallocate(_vector + _size);
-			return iterator(_vector + _size);
-		}
-
-
 		difference_type diff = pos - begin();
 		pointer tmp = _allocator.allocate(_capacity);
 		size_type i = 0;
@@ -423,6 +418,7 @@ public:
 		}
 		this->~vector();
 		_vector = tmp;
+		_size = i;
 		return (iterator(_vector + diff));
 	}
 	iterator erase( iterator first, iterator last )
@@ -467,14 +463,15 @@ public:
 			_capacity ? _capacity *= 2 : _capacity = 1;
 
 			pointer tmp = _allocator.allocate(_capacity);
-			size_t i = 0;
+			size_type i = 0;
 			iterator it = begin();
 			for(; it != end(); ++it, ++i)
 				_allocator.construct(&tmp[i], *it);
 			_allocator.construct(&tmp[i], value);
 			++i;
+			if (_size)
+				this->~vector();
 			_size = i;
-			this->~vector();
 			_vector = tmp;
 		}
 		else
@@ -515,12 +512,13 @@ public:
 		else
 		{
 			while (_capacity < n)
-				_capacity *= 2;
+				_capacity = _capacity ? _capacity * 2 : 1;
+
 
 			pointer tmp = _allocator.allocate(_capacity);
 			iterator it = begin();
 			size_t i = 0;
-			for(; it != end(); ++it, ++it)
+			for(; it != end(); ++it, ++i)
 				_allocator.construct(&tmp[i], *it);
 			for(; i < n; ++i)
 				_allocator.construct(&tmp[i], value);
