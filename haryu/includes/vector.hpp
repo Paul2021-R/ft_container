@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 16:09:36 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/17 00:22:10 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/17 00:28:23 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ size_type __check_length(size_type __n) {
 }
 
 void __destruct_storage() FT_NOEXCEPT;
+
 pointer __construct_storage(size_type __n) {
 	return __n == 0 ? pointer() : __a_.allocate(__n);
 };
