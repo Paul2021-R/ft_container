@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/18 20:12:35 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/20 17:12:56 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/20 23:58:58 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "iterator.hpp"
 #include "utility.hpp"
 
-#define FT_NOEXCEPT thorw()
+#define FT_NOEXCEPT throw()
 
 namespace ft {
 
@@ -62,7 +62,7 @@ struct __tree_node_base {
 // 트리 헤더 
 struct __tree_header {
 	__tree_node_base __header_;
-	size_t __node_cout_;
+	size_t __node_count_;
 
 	__tree_header() {
 		__header_.__color_ = RED;
@@ -702,7 +702,7 @@ void __tree<_Key, _Val, _KeyofValue, _Compare, _Alloc>::swap(__tree & __t) {
 
 		__root()->__parent_ = __end();
 		__t.__root()->__parent_ = __t.__end();
-		ft::swap(__impl_.__node_count_, __t.__impl_.__node_cout_);
+		ft::swap(__impl_.__node_count_, __t.__impl_.__node_count_);
 	}
 	ft::swap(__get_Node_allocator(), __t.__get_Node_allocator());
 }
