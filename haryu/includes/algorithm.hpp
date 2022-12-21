@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 22:19:08 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/15 22:43:22 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/21 15:53:29 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,7 @@ bool equal(InputIterator1 first1, InputIterator1 last1, InputIterator2 first2) {
 	while (first1 != last1) {
 		if(!(*first1 == *first2))
 			return false;
-		++first1;
-		++first2;
+		++first1, ++first2;
 	}
 	return true;
 }
@@ -29,8 +28,7 @@ bool equal (InputIterator1 first1, InputIterator1 last1, InputIterator2 first2, 
 	while (first1 != last1) {
 		if (!pred(*first1, *first2))
 			return false;
-		++first1;
-		++first2;
+		++first1, ++first2;
 	}
 	return true;
 }
@@ -41,8 +39,7 @@ bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1, InputI
 			return false;
 		else if (*first1 < *first2)
 			return true;
-		++first1;
-		++first2;
+		++first1, ++first2;
 	}
 	return (first2 != last2);
 }
@@ -53,8 +50,7 @@ bool lexicographical_compare(InputIterator1 first1, InputIterator1 last1, InputI
 			return false;
 		else if (Comp(*first1, *first2))
 			return true;
-		++first1;
-		++first2;
+		++first1, ++first2;
 	}
 	return (first2 != last2);
 }

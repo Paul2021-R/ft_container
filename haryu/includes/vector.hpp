@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/16 16:09:36 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/17 00:28:23 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/21 16:15:54 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,16 +131,16 @@ __vector_base<_T, _Allocator>::__vector_base(const allocator_type & a) FT_NOEXCE
 
 template <typename _T, typename _Allocator>
 __vector_base<_T, _Allocator>::__vector_base(size_type __n) : __a_(std::allocator<_T>()) {
-	this->__begin_ = __construct_storage(__n);
-	this->__end_ = this->__begin_;
-	this->__end_cap_ = this->__begin_ + __n; 
+	__begin_ = __construct_storage(__n);
+	__end_ = __begin_;
+	__end_cap_ = __begin_ + __n; 
 }
 
 template <typename _T, typename _Allocator>
 __vector_base<_T, _Allocator>::__vector_base(size_type __n, const allocator_type & a) : __a_(a) {
-	this->__begin_ = __construct_storage(__n);
-	this->__end_ = this->__begin_;
-	this->__end_cap_ = this->__begin_ + __n; 
+	__begin_ = __construct_storage(__n);
+	__end_ = __begin_;
+	__end_cap_ = __begin_ + __n; 
 }
 
 template <typename _T, typename _Allocator>
@@ -161,7 +161,7 @@ template <typename _T, typename _Allocator>
 void __vector_base<_T, _Allocator>::__swap_data(__vector_base& _other) FT_NOEXCEPT {
 	pointer __temp_begin_(__begin_);
 	pointer __temp_end_(__end_);
-	pointer __temp_end_cap_(__end_);
+	pointer __temp_end_cap_(__end_cap_);
 	allocator_type __temp_a_(__a_);
 	this->__copy_data(_other);
 	this->__a_ = _other.__a_;
@@ -364,18 +364,19 @@ const_reference operator[](size_type n) const {
 	return const_referecnce(*(this->__begin_ + n));
 }
 reference at(size_type n) {
-	if (n < this->size())
-		this->__throw_out_of_range("out of range");
+	if (n > this->size())
+		this->__throw_out_of_range("vector: out of range");
 	return *(this->__begin_ + n);
 }
 const_reference at(size_type n) const {
-	if (n < this->size())
-		this->__throw_out_of_range("out of range");
+	if (n > this->size())
+		this->__throw_out_of_range("vector: out of range");
 	return *(this->__begin_ + n);
 }
 reference front() { return *this->__begin_; }
 const_reference front() const { return *this->__begin_; }
 reference back() { return *(this->__end_ - 1); } // 1개 빼야 하는 이유는?
+const_reference back() const { return *(this->__end_ - 1); } // 1개 빼야 하는 이유는?
 
 // modifiers 
 template <typename _InputIterator>
@@ -689,7 +690,7 @@ inline bool operator==(const vector<_T, _Allocator>& lhs, const vector<_T, _Allo
 
 template <typename _T, typename _Allocator>
 inline bool operator!=(const vector<_T, _Allocator>& lhs, const vector<_T, _Allocator>& rhs) {
-	return !(lhs.size() == rhs.size());
+	return !(lhs == rhs);
 }
 
 template <typename _T, typename _Allocator>
@@ -701,10 +702,10 @@ template <typename _T, typename _Allocator>
 inline bool operator<=(const vector<_T, _Allocator>& lhs, const vector<_T, _Allocator>& rhs) { return !(lhs > rhs); }
 
 template <typename _T, typename _Allocator>
-inline bool operator>(const vector<_T, _Allocator>& lhs, const vector<_T, _Allocator>& rhs) { return lhs > rhs; }
+inline bool operator>(const vector<_T, _Allocator>& lhs, const vector<_T, _Allocator>& rhs) { return rhs < lhs; }
 
 template <typename _T, typename _Allocator>
-inline bool operator>=(const vector<_T, _Allocator>& lhs, const vector<_T, _Allocator>& rhs) { return !(lhs < rhs); }
+inline bool operator>=(const vector<_T, _Allocator>& lhs, const vector<_T, _Allocator>& rhs) { return !(rhs > lhs); }
 
 //swap 메소드
 template <typename _T, typename _Allocator>

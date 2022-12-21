@@ -6,12 +6,12 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 21:18:45 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/20 23:59:34 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/21 13:24:06 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/__tree.hpp"
-#include "../includes/utility.hpp"
+#include "__tree.hpp"
+#include "utility.hpp"
 
 namespace ft {
 

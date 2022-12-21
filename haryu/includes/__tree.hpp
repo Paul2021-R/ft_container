@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/18 20:12:35 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/20 23:58:58 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/21 12:28:45 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ __tree_node_base * __tree_increment(__tree_node_base * __x) FT_NOEXCEPT;
 const __tree_node_base * __tree_increment(const __tree_node_base * __x) FT_NOEXCEPT;
 
 __tree_node_base * __tree_decrement(__tree_node_base *__x) FT_NOEXCEPT;
-const __tree_node_base * __tree_decrement(__tree_node_base *__x) FT_NOEXCEPT;
+const __tree_node_base * __tree_decrement(const __tree_node_base *__x) FT_NOEXCEPT;
 
 void __tree_rotate_left(const __tree_node_base * __x, const __tree_node_base *&__root);
 void __tree_rotate_right(const __tree_node_base * __x, const __tree_node_base *&__root);
