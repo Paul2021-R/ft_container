@@ -171,6 +171,17 @@ namespace ft {
 			this->template assign(other.begin(), other.end());
 		}
 
+		void print_vec() {
+		#include <iostream>
+
+		#define OUT std::cout
+		#define END std::endl
+
+		OUT << "size : " << this->size() << END;
+		OUT << "max size : "<< this->max_size() << END;
+		 OUT << "capacity : " << this->_capacity << END;
+		}
+
 		vector &operator=(const vector &other) {
 			this->template assign(other.begin(), other.end());
 			return *this;
@@ -346,7 +357,14 @@ namespace ft {
 		}
 
 		void push_back(const value_type &val) {
-			this->reserve(_size + 1);
+
+			if (this->size() == this->capacity() && this->size() < this->max_size()) {
+				size_type n;
+				n = _size + 1000000;
+				this->reserve(n);
+			}
+			else if (this->size() == 0)
+				this->reserve(_size + 100000);
 			_allocator.construct(_container + _size, val);
 			_size += 1;
 		}
