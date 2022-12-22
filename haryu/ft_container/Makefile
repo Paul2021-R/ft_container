@@ -21,7 +21,7 @@ all					: $(NAME)
 
 $(NAME)				: $(OBJS)
 					$(info $(sky)====================  $(NAME)  ====================$(reset))
-					$(AR) $(ARFLAG) $@ $^
+					$(CC) $(CFLAG) -o $(NAME) $(OBJS)
 
 clean				:
 					$(info $(alret)====================  clean $(NAME)  ====================$(reset))
