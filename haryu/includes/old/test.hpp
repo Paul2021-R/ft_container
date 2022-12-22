@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/17 00:23:34 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/20 21:16:14 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/21 23:16:44 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,7 @@ std::ostream& operator,(std::ostream& out, const T& t) {
   out << t;
   return out;
 }
+
+
 
 #endif 

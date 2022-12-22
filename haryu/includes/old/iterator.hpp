@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 05:14:37 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/21 16:22:35 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/21 23:11:23 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -265,11 +265,11 @@ bool operator!=(const reverse_iterator<_Iter1> &__lhs, const reverse_iterator<_I
 	return __lhs.base() != __rhs.base();
 }
 template <typename _Iter1, typename _Iter2>
-bool operator>(const reverse_iterator<_Iter1> &__lhs, const reverse_iterator<_Iter2> & __rhs) {
+bool operator<(const reverse_iterator<_Iter1> &__lhs, const reverse_iterator<_Iter2> & __rhs) {
 	return __lhs.base() > __rhs.base();
 }
 template <typename _Iter1, typename _Iter2>
-bool operator<(const reverse_iterator<_Iter1> &__lhs, const reverse_iterator<_Iter2> & __rhs) {
+bool operator>(const reverse_iterator<_Iter1> &__lhs, const reverse_iterator<_Iter2> & __rhs) {
 	return __lhs.base() < __rhs.base();
 }
 template <typename _Iter1, typename _Iter2>

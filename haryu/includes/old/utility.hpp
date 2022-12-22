@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/18 20:14:21 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/18 21:03:50 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/21 23:19:39 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,8 @@ _T1 first;
 _T2 second;
 
 // 생성자 
-pair () : first(), secod() {}
-template <typename _p1, typenamd _P2>
+pair () : first(), second() {}
+template <typename _P1, typename _P2>
 pair(const pair<_P1, _P2> & other) : 
 	first(other.first), 
 	second(other.second) {}

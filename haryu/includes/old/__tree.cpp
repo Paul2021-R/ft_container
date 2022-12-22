@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/20 21:18:45 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/21 13:24:06 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/22 00:32:57 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ static void local_insert_fixup(__tree_node_base *& __x, __tree_node_base *& __ro
 		if (__x->__parent_ == __xpp->__left_) {
 			__tree_node_base *const __y = __xpp->__right_;
 			if (__y && __y->__color_ == RED) { // __x 의 삼촌 노드가 RED(case1)
-				__x->__parent_->__color_ == BLACK;
+				__x->__parent_->__color_ = BLACK;
 				__y->__color_ = BLACK;
 				__xpp->__color_ = RED;
 				__x = __xpp;
