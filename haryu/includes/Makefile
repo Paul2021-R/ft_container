@@ -1,4 +1,4 @@
-NAME				= ft.a
+NAME				= ft_container
 
 CC					= c++
 CFLAG				= -Wall -Wextra -Werror -std=c++98
