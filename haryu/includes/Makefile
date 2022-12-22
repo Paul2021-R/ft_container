@@ -34,9 +34,9 @@ fclean				:
 					# rm -rf $(NAME).dSYM
 
 
-# debug				:
-# 					$(info $(alret)====================  Debug $(NAME)  ====================$(reset))
-# 					$(CC) $(CFLAG) -g3 -fsanitize=address -o $(NAME) $(OBJS)
+debug				:
+					$(info $(alret)====================  Debug $(NAME)  ====================$(reset))
+					$(CC) $(CFLAG) -g3 -fsanitize=address -o $(NAME) $(OBJS)
 
 re					: fclean all
 					$(info $(green)====================  remake $(NAME)  ====================$(reset))
