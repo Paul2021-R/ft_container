@@ -1,18 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/12/23 15:52:45 by haryu             #+#    #+#             */
+/*   Updated: 2022/12/23 16:30:03 by haryu            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <iostream>
 #include <string>
 #include <deque>
-// #if 1 //CREATE A REAL STL EXAMPLE
-// 	#include <map>
-// 	#include <stack>
-// 	#include <vector>
-// 	namespace ft = std;
-// #else
+#include <stdlib.h>
+#include <ctime>
+
+#ifndef STDMODE 
+#define STDMODE 0
+#endif
+
+#if STDMODE //CREATE A REAL STL EXAMPLE
+	#include <map>
+	#include <stack>
+	#include <vector>
+	namespace ft = std;
+#else
 	#include "map.hpp"
 	#include "stack.hpp"
 	#include "vector.hpp"
-// #endif
+#endif
 
-#include <stdlib.h>
 
 #define MAX_RAM 4294967296
 #define BUFFER_SIZE 4096
@@ -44,7 +62,15 @@ public:
 	iterator end() { return this->c.end(); }
 };
 
+
 int main(int argc, char** argv) {
+
+#if STDMODE
+	printf("Standard Templete Library mode container program\n");
+#else
+	printf("Custom Standard Templete Library mode container program\n");
+#endif 
+
 	if (argc != 2)
 	{
 		std::cerr << "Usage: ./test seed" << std::endl;
@@ -54,9 +80,6 @@ int main(int argc, char** argv) {
 	}
 	const int seed = atoi(argv[1]);
 	srand(seed);
-	int kk = 0;
-
-	std::cout << kk++ << std::endl;
 
 	ft::vector<std::string> vector_str;
 	ft::vector<int> vector_int;
@@ -65,13 +88,17 @@ int main(int argc, char** argv) {
 	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
 	ft::map<int, int> map_int;
 
-	std::cout << kk++ << std::endl;
+	time_t firstTime;
+	time_t secondTime;
+
+	time(&firstTime);
+	std::cout << "Starting Time : " << firstTime << std::endl;
+	std::cout << "\n===========================================================" << std::endl;
 	for (int i = 0; i < COUNT; i++)
 	{
 		vector_buffer.push_back(Buffer());
 	}
 
-	std::cout << kk++ << std::endl;
 	for (int i = 0; i < COUNT; i++)
 	{
 		const int idx = rand() % COUNT;
@@ -81,7 +108,7 @@ int main(int argc, char** argv) {
 
 	try
 	{
-		std::cout << kk++ << std::endl;
+
 		for (int i = 0; i < COUNT; i++)
 		{
 			const int idx = rand() % COUNT;
@@ -90,37 +117,31 @@ int main(int argc, char** argv) {
 		}
 	}
 	catch(const std::exception& e)
-	{
-		//NORMAL ! :P
+	{ 	//NORMAL ! :P 
 	}
 	
-	std::cout << kk++ << std::endl;
 	for (int i = 0; i < COUNT; ++i)
-	{
 		map_int.insert(ft::make_pair(rand(), rand()));
-	}
 
 	int sum = 0;
-	std::cout << kk++ << std::endl;
 	for (int i = 0; i < 10000; i++)
 	{
 		int access = rand();
 		sum += map_int[access];
 	}
 	std::cout << "should be constant with the same seed: " << sum << std::endl;
-	
 	{
 		ft::map<int, int> copy = map_int;
 	}
 	MutantStack<char> iterable_stack;
-	std::cout << kk++ << std::endl;
 	for (char letter = 'a'; letter <= 'z'; letter++)
 		iterable_stack.push(letter);
-	std::cout << kk++ << std::endl;
 	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
-	{
 		std::cout << *it;
-	}
 	std::cout << std::endl;
+	std::cout << "===========================================================\n" << std::endl;
+	time(&secondTime);
+	std::cout << "Finished Time : " << secondTime << std::endl;
+	std::cout << "Container performance Gap : " << secondTime - firstTime << std::endl;
 	return (0);
 }

@@ -188,12 +188,14 @@ namespace ft {
 				if ((*n).data.first == key) {
 					res = n;
 					break;
-				} else if (!_comparator((*n).data.first, key)) {
+				} 
+				else if (!_comparator((*n).data.first, key)) {
 					res = n;
 					if (!n->left)
 						break;
 					n = n->left;
-				} else if (_comparator((*n).data.first, key)) {
+				} 
+				else if (_comparator((*n).data.first, key)) {
 					if (!n->right)
 						break;
 					n = n->right;

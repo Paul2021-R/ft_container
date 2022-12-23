@@ -22,6 +22,7 @@ all					: $(NAME)
 $(NAME)				: $(OBJS)
 					$(info $(sky)====================  $(NAME)  ====================$(reset))
 					$(CC) $(CFLAG) -o $(NAME) $(OBJS)
+					$(CC) $(CFLAG) -D STDMODE=1 -o std_container $(OBJS)
 
 clean				:
 					$(info $(alret)====================  clean $(NAME)  ====================$(reset))
@@ -30,6 +31,7 @@ clean				:
 fclean				: 
 					$(info $(alret)====================  fclean $(NAME)  ====================$(reset))
 					rm -rf $(NAME)
+					rm -rf std_container
 					rm -rf $(SRCS_DIR)*.o
 					# rm -rf $(NAME).dSYM
 
