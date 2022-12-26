@@ -15,7 +15,7 @@ namespace ft {
 		typedef typename container_type::reference			reference;
 		typedef typename container_type::const_reference	const_reference;
 
-	public:
+	protected:
 		container_type	c;
 
 	public:
@@ -24,7 +24,7 @@ namespace ft {
 		~stack() {};
 
 		stack& operator=(const stack& other) {
-			c = other.c;
+			c = other.getC();
 			return *this;
 		}
 
@@ -51,36 +51,38 @@ namespace ft {
 		void pop() {
 			c.pop_back();
 		}
+
+		container_type getC() const { return this->c; }
 	};
 
 	template< class T, class Container >
-	bool operator==(const stack<T,Container>& lhs, const stack<T,Container>& rhs) {
-		return lhs.c == rhs.c;
+	bool operator==(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
+		return lhs.getC() == rhs.getC();
 	}
 
 	template< class T, class Container >
-	bool operator!=(const stack<T,Container>& lhs, const stack<T,Container>& rhs) {
-		return lhs.c != rhs.c;
+	bool operator!=(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
+		return !(lhs == rhs);
 	}
 
 	template< class T, class Container >
-	bool operator<(const stack<T,Container>& lhs, const stack<T,Container>& rhs) {
-		return lhs.c < rhs.c;
+	bool operator<(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
+		return lhs.getC() < rhs.getC();
 	}
 
 	template< class T, class Container >
-	bool operator<=(const stack<T,Container>& lhs, const stack<T,Container>& rhs) {
-		return lhs.c <= rhs.c;
+	bool operator<=(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
+		return !(rhs < lhs);
 	}
 
 	template< class T, class Container >
-	bool operator>(const stack<T,Container>& lhs, const stack<T,Container>& rhs) {
-		return lhs.c > rhs.c;
+	bool operator>(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
+		return rhs < lhs;
 	}
 
 	template< class T, class Container >
-	bool operator>=(const stack<T,Container>& lhs, const stack<T,Container>& rhs) {
-		return lhs.c >= rhs.c;
+	bool operator>=(const stack<T, Container>& lhs, const stack<T, Container>& rhs) {
+		return !(lhs < rhs);
 	}
 
 }

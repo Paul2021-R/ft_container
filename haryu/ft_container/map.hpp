@@ -13,7 +13,7 @@ namespace ft {
 	public:
 		typedef Key														key_type;
 		typedef T														mapped_type;
-		typedef ft::pair<const Key, T>									value_type;
+		typedef ft::pair<const key_type, mapped_type>					value_type;
 		typedef std::size_t												size_type;
 		typedef std::ptrdiff_t											difference_type;
 		typedef Compare													key_compare;
@@ -23,7 +23,7 @@ namespace ft {
 		typedef typename Allocator::pointer								pointer;
 		typedef typename Allocator::const_pointer						const_pointer;
 
-		class value_compare : public std::binary_function<value_type, value_type, bool> {
+		class value_compare : public ft::binary_function<value_type, value_type, bool> {
 		protected:
 			key_compare comp;
 		public:
@@ -105,22 +105,23 @@ namespace ft {
 
 		T &at(const Key &key) {
 			node_pointer res = _tree->find(key);
-			if (res == nullptr) return res;
+			if (res == nullptr) 
+				return res;
 			return res->data.second;
 		}
 
 		const T &at(const Key &key) const {
 			node_pointer res = _tree->find(key);
-			if (res == nullptr) return res;
+			if (res == nullptr) 
+				return res;
 			return res->data.second;
 		}
 
 		T &operator[](const Key &key) {
 			value_type pair = ft::make_pair(key, T());
 			node_pointer res = _tree->find(pair);
-			if (res == end().base()) {
+			if (res == end().base())
 				return insert(pair).first->second;
-			}
 			return res->data.second;
 		}
 

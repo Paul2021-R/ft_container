@@ -7,7 +7,7 @@
 namespace ft {
 
 	enum Color {
-		RED, BLACK, DOUBLE_BLACK
+		RED, BLACK, NIL
 	};
 
 	template<class T>
@@ -20,7 +20,9 @@ namespace ft {
 	public:
 		value_type data;
 		Color color;
-		node_pointer parent, left, right;
+		node_pointer parent;
+		node_pointer left;
+		node_pointer right;
 
 	public:
 
@@ -42,21 +44,31 @@ namespace ft {
 
 		bool isBlack() { return color == BLACK; };
 
-		bool isDoubleBlack() { return color == DOUBLE_BLACK; };
+		bool isNil() { return color == NIL; };
 
+		/**
+		 * @brief 루트면 null, 해당 객체가 left 노드이면 부모의 우측 즉 자신의 사촌 노드를 반환한다. 
+		 * 
+		 * @return node_pointer 
+		 */
 		node_pointer sibling() {
-			if (isRoot()) return nullptr;
-			if (isLeft()) return parent->right;
-			else return parent->left;
+			if (isRoot()) 
+				return nullptr;
+			if (isLeft()) 
+				return parent->right;
+			else 
+				return parent->left;
 		};
 
 		node_pointer uncle() {
-			if (isRoot()) return nullptr;
+			if (isRoot()) 
+				return nullptr;
 			return parent->getSibling();
 		};
 
 		node_pointer grandparent() {
-			if (isRoot()) return nullptr;
+			if (isRoot()) 
+				return nullptr;
 			return parent->parent;
 		};
 
@@ -110,7 +122,7 @@ namespace ft {
 					ptr = ptr->left;
 			} else {
 				while (ptr->parent) {
-					if (!ptr->isDoubleBlack() && !compare(ptr->parent->data, ptr->data) && ptr->parent->data != ptr->data) {
+					if (!ptr->isNil() && !compare(ptr->parent->data, ptr->data) && ptr->parent->data != ptr->data) {
 						ptr = ptr->parent;
 						return (*this);
 					}
@@ -131,13 +143,13 @@ namespace ft {
 
 			if (ptr->left) {
 				ptr = ptr->left;
-				while (ptr->right && !ptr->right->isDoubleBlack())
+				while (ptr->right && !ptr->right->isNil())
 					ptr = ptr->right;
 			} else {
 
 				while (ptr->parent) {
 
-					if (ptr->isDoubleBlack() || compare(ptr->parent->data, ptr->data)) {
+					if (ptr->isNil() || compare(ptr->parent->data, ptr->data)) {
 						ptr = ptr->parent;
 						return *this;
 					}
@@ -235,16 +247,28 @@ namespace ft {
 			ptr->parent = left_child;
 		}
 
+		/**
+		 * @brief 제일 작은 노드 값을 발견하기, 왼쪽으로 이동용.
+		 * 
+		 * @param node 
+		 * @return node_pointer 
+		 */
 		node_pointer minValueNode(node_pointer node) {
 			node_pointer ptr = node;
-			while (ptr->left != nullptr && !ptr->isDoubleBlack())
-				ptr = ptr->left;
+			while (ptr->left != nullptr && !ptr->isNil())
+				ptr = ptr->left; // 가장 왼쪽 노드를 발견한다. 
 			return ptr;
 		}
 
+		/**
+		 * @brief 가장 큰 노드 값을 발견하기, 오른쪽으로 이동용 
+		 * 
+		 * @param node 
+		 * @return node_pointer 
+		 */
 		node_pointer maxValueNode(node_pointer node) {
 			node_pointer ptr = node;
-			while (ptr->right != nullptr && !ptr->isDoubleBlack())
+			while (ptr->right != nullptr && !ptr->isNil())
 				ptr = ptr->right;
 			return ptr;
 		}
@@ -265,6 +289,7 @@ namespace ft {
 			if (node->right)
 				node->right->parent = node;
 		}
+
 		node_pointer* selfParentPtr(node_pointer node) {
 			if (!node->parent)
 				return &_root;
@@ -285,9 +310,12 @@ namespace ft {
 			fixDependencies(rhs);
 		}
 		node_pointer replaceNodeWithLoneChild(node_pointer a, node_pointer b) {
-			if (b->parent != a) throw std::exception();
-			if (a->left && a->right) throw std::exception();
-			if (!a->left && !a->right) throw std::exception();
+			if (b->parent != a) 
+				throw std::exception();
+			if (a->left && a->right) 
+				throw std::exception();
+			if (!a->left && !a->right) 
+				throw std::exception();
 			b->parent = a->parent;
 			*selfParentPtr(a) = b;
 			return b;
@@ -299,31 +327,34 @@ namespace ft {
 			while (ptr != _root && getColor(ptr) == RED && getColor(ptr->parent) == RED) {
 				parent = ptr->parent;
 				grandparent = parent->parent;
-				if (parent == grandparent->left) {
+				if (parent == grandparent->left) { // 조부모 노드 기준 왼쪽에 부모 노드이고, 그 노드의 자식이 ptr 이 된다.
 					node_pointer uncle = grandparent->right;
-					if (getColor(uncle) == RED) {
+					if (getColor(uncle) == RED) { // 현재 노드가 RED 이고, 법칙을 위해 부모와 삼촌이 모두 BLACK 이 되어야 한다. 할아버지는 RED가 되어야 한다. 
 						setColor(uncle, BLACK);
 						setColor(parent, BLACK);
 						setColor(grandparent, RED);
-						ptr = grandparent;
-					} else {
+						ptr = grandparent; // 할아버지가 ptr 의 포인터에 들어간다. 
+					} 
+					else { // Uncle 이 Black 이고, 따라서 좌회전을 시켜버린다. 
 						if (ptr == parent->right) {
 							rotateLeft(parent);
-							ptr = parent;
+							ptr = parent; 
 							parent = ptr->parent;
 						}
 						rotateRight(grandparent);
 						std::swap(parent->color, grandparent->color);
 						ptr = parent;
 					}
-				} else {
+				} 
+				else { // 부모가 조부모 오른쪽 자식일 때
 					node_pointer uncle = grandparent->left;
 					if (getColor(uncle) == RED) {
 						setColor(uncle, BLACK);
 						setColor(parent, BLACK);
 						setColor(grandparent, RED);
 						ptr = grandparent;
-					} else {
+					} 
+					else {
 						if (ptr == parent->left) {
 							rotateRight(parent);
 							ptr = parent;
@@ -339,17 +370,16 @@ namespace ft {
 		}
 
 		node_pointer insertBST(node_pointer root, node_pointer ptr) {
-			if (root == nullptr || root->isDoubleBlack()) return ptr;
-			if (_comparator(ptr->data, root->data)) {
-
+			if (root == nullptr || root->isNil()) // 노드가 없거나, 첫 노드로 끝날 때  
+				return ptr;
+			if (_comparator(ptr->data, root->data)) { // ptr의 데이터보다 root의 데이터가 크기가 큼 
 				root->left = insertBST(root->left, ptr);
 				root->left->parent = root;
 
-		} else if (!_comparator(ptr->data, root->data)) {
-
+			}
+			else { // 값이 역순으로 큰 경우(ptr이 root 보다 큼)
 				root->right = insertBST(root->right, ptr);
 				root->right->parent = root;
-
 			}
 			return root;
 		}
@@ -368,7 +398,7 @@ namespace ft {
 				if (node->parent->color == BLACK && node->sibling() &&		// case 3
 					node->sibling()->color == BLACK &&
 					(!node->sibling()->left || node->sibling()->left->color == BLACK) &&
-					((!node->sibling()->right || node->sibling()->right->isDoubleBlack()) || node->sibling()->right->color == BLACK))
+					((!node->sibling()->right || node->sibling()->right->isNil()) || node->sibling()->right->color == BLACK))
 				{
 					node->sibling()->color = RED;
 					fixDeleteRBTree(node->parent);
@@ -376,7 +406,7 @@ namespace ft {
 				else if (node->parent->color == RED && node->sibling() &&		// case 4
 						 node->sibling()->color == BLACK &&
 						 (!node->sibling()->left || node->sibling()->left->color == BLACK) &&
-						 ((!node->sibling()->right || node->sibling()->right->isDoubleBlack()) || node->sibling()->right->color == BLACK))
+						 ((!node->sibling()->right || node->sibling()->right->isNil()) || node->sibling()->right->color == BLACK))
 				{
 					node->sibling()->color = RED;
 					node->parent->color = BLACK;
@@ -384,7 +414,7 @@ namespace ft {
 				else if (node->isLeft() && node->sibling() &&				// case 5
 						 node->sibling()->color == BLACK &&
 						 node->sibling()->left && node->sibling()->left->color == RED &&
-						 ((!node->sibling()->right || node->sibling()->right->isDoubleBlack()) || node->sibling()->right->color == BLACK))
+						 ((!node->sibling()->right || node->sibling()->right->isNil()) || node->sibling()->right->color == BLACK))
 				{
 					node->sibling()->color = RED;
 					node->sibling()->left->color = BLACK;
@@ -392,7 +422,7 @@ namespace ft {
 				}
 				else if (node->isRight() && node->sibling() &&			// still case 5
 						 node->sibling()->color == BLACK &&
-						 node->sibling()->right && !node->sibling()->right->isDoubleBlack() && node->sibling()->right->color == RED &&
+						 node->sibling()->right && !node->sibling()->right->isNil() && node->sibling()->right->color == RED &&
 						 (!node->sibling()->left || node->sibling()->left->color == BLACK))
 				{
 					node->sibling()->color = RED;
@@ -405,11 +435,11 @@ namespace ft {
 
 				if (node->sibling()) {
 					if (node->isLeft()) {
-						if (node->sibling()->right && !node->sibling()->right->isDoubleBlack())
+						if (node->sibling()->right && !node->sibling()->right->isNil())
 							node->sibling()->right->color = BLACK;
 						rotateLeft(node->parent);
 					} else {
-						if (node->sibling()->right && !node->sibling()->right->isDoubleBlack())
+						if (node->sibling()->right && !node->sibling()->right->isNil())
 							node->sibling()->left->color = BLACK;
 						rotateRight(node->parent);
 					}
@@ -418,47 +448,45 @@ namespace ft {
 		}
 
 		void deleteBST(node_pointer node) {
-
-			if (!node->parent && !node->left && (!node->right || node->right->isDoubleBlack()))
+			if (!node->parent && !node->left && (!node->right || node->right->isNil())) // 부모 노드가 없고, left 가 없고, 우측 노드가 없거나 혹은 우측 노드가 leaf node 인 경우 (root) 케이스
 				_root = NULL;
-
-			else if (!node->left && (!node->right || node->right->isDoubleBlack())) {
-
-				if (node->isLeft())
+			else if (!node->left && (!node->right || node->right->isNil())) { // left 가 없고, 우측 노드가 없거나 혹은 우측 노드가 leaf node 인 경우 ; 마지막 우측 노드이거나 leaf 노드인 케이스
+				if (node->isLeft()) // 그런 node가 왼쪽 노드이며 left 포인터를 지워준다. (부모와 연결 끊기)
 					node->parent->left = NULL;
-				else
+				else // 왼쪽이 아니면 오른쪽 부모의 오른쪽 노드 포인터를 지운다. 
 					node->parent->right = NULL;
-
-			} else if (node->left && node->right && !node->right->isDoubleBlack()) {
-
+			} 
+			else if (node->left && node->right && !node->right->isNil()) {// 부모 노드이며, 가장 끝 단이 아닌 노드
 				node_pointer min = minValueNode(node->right);
-				swapNode(node, min);
+				swapNode(node, min); // 현재 지워야 할 가장 작은 값으로 가기 위해서
 				deleteBST(node);
-
-			} else if (!node->left) {
-
+			} 
+			else if (!node->left) { // left 값이 존재하지 않는 경우, 반대로 가장 작은 값의 분기에 들어섰다. 
 				node = replaceNodeWithLoneChild(node, node->right);
 				fixDeleteRBTree(node);
-
-			} else if (!node->right || node->right->isDoubleBlack()) {
+			} 
+			else if (!node->right || node->right->isNil()) {
 				node = replaceNodeWithLoneChild(node, node->left);
 				fixDeleteRBTree(node);
 			}
 
 		}
 
-		void covid19(node_pointer node) {
-			if (!node || node->isDoubleBlack()) return;
+		void removalNodeLeftRight(node_pointer node) {
+			if (!node || node->isNil()) 
+				return;
 
-			covid19(node->left);
-			covid19(node->right);
-
+			removalNodeLeftRight(node->left);
+			removalNodeLeftRight(node->right);
 			_allocator.destroy(node);
 			_allocator.deallocate(node, 1);
 		}
 
+		/**
+		 * @brief 노드들 중 가장 왼쪽 start 포인터와 end 포인터를 재 설정 해주는 작업. 
+		 * 
+		 */
 		void fixSEPoints() {
-
 			if (!_root) {
 				_start = _root;
 				_end = _root;
@@ -466,25 +494,26 @@ namespace ft {
 			}
 
 			node_pointer current = _root;
-			while (current->left != nullptr)
+			while (current->left != nullptr) // 왼쪽 끝까지 간다.
 				current = current->left;
-			_start = current;
+			_start = current; // 현재 기준이 되는 첫 시작 지점은 가장 왼쪽 노드이다.
 
-			if (!_end)
-				_allocator.construct(_end, node_type(value_type(), DOUBLE_BLACK));
+			if (!_end) // end 포인트가 지정되어 있지 않다면, 새롭게 end를 만들고 NIL으로 표시해준다. 
+				_allocator.construct(_end, node_type(value_type(), NIL));
 
 			current = _root;
-			while (current->right != nullptr && !current->right->isDoubleBlack())
+			while (current->right != nullptr && !current->right->isNil())
 				current = current->right;
-			current->right = _end;
-			_end->parent = current;
+			current->right = _end; // 루트 기준 가장 오른쪽에 있는 노드 nullptr 혹은 NIL 위치까지 와서, end 노드 포인터를 집어 넣어준다. 
+			_end->parent = current; // end 의 노드의 부모에 current 노드 포인터를 대입
 		}
 
 	public:
 		RBTree(const allocator_type &alloc = allocator_type())
 				: _root(nullptr), _allocator(alloc), _end(nullptr), _start(nullptr) {
 			_end = _allocator.allocate(1);
-			_allocator.construct(_end, node_type(value_type(), DOUBLE_BLACK));
+			_allocator.construct(_end, node_type(value_type(), NIL)); 
+			// 기본 생성시 end 포인터로 집어넣고 duble black 으로 실제 값이 들어가지 않는 leaf node 를 생성한다. 
 		}
 
 		~RBTree() {
@@ -494,23 +523,24 @@ namespace ft {
 
 		node_pointer insert(const value_type &data) {
 			node_pointer node = _allocator.allocate(1);
-			_allocator.construct(node, RBNode<value_type>(data));
-			_root = insertBST(_root, node);
-			fixInsertRBTree(node);
-			fixSEPoints();
+			_allocator.construct(node, RBNode<value_type>(data)); // 노드 생성
+			_root = insertBST(_root, node); // 루트를 기준으로 삽입 위치 판단
+			fixInsertRBTree(node); // 노드 밸런싱 진행함
+			fixSEPoints(); 
 
 			return node;
 		}
 
 		void remove(node_pointer node) {
-			if (!node) return;
+			if (!node) 
+				return;
 			deleteBST(node);
 			fixSEPoints();
 		}
 
 		node_pointer find(const value_type &data) {
 			node_pointer current = _root;
-			while (current != nullptr && !current->isDoubleBlack()) {
+			while (current != nullptr && !current->isNil()) {
 				if (!_comparator(data, current->data) && !_comparator(current->data, data))
 					return current;
 				else if (_comparator(data, current->data))
@@ -522,7 +552,7 @@ namespace ft {
 		}
 
 		void clear() {
-			covid19(_root);
+			removalNodeLeftRight(_root);
 			_start = nullptr;
 			_end = nullptr;
 		}
@@ -534,40 +564,6 @@ namespace ft {
 		node_pointer begin() { return _start; }
 
 		node_pointer root() { return _root; }
-
-# define NORMAL "\033[0;37m"
-# define BOLD_RED "\033[1;31m"
-
-		void print_tree(std::string s = "") {
-			(void) s;
-			//return;
-			std::cout << NORMAL << "===============================" << std::endl;
-			_print_tree(_root);
-			std::cout << NORMAL << "END NODE AFTER: " << _end->parent->data << std::endl;
-			std::cout << NORMAL << "===============================" << std::endl;
-		}
-
-		void _print_tree(node_pointer n, size_t l = 0) {
-
-			if (!n || n->isDoubleBlack()) {
-				std::cout << std::endl;
-				return;
-			}
-
-			_print_tree(n->right, l + 1);
-			std::string coll = n->isRed() ? BOLD_RED : NORMAL;
-			std::cout << coll << std::string(l * 4, ' ');
-			if (n->parent) {
-				std::cout << "(" << n->parent->data << ")";
-				if (n->isLeft())
-					std::cout << "\\";
-				else
-					std::cout << "/";
-			}
-			std::cout << n->data << NORMAL;
-			_print_tree(n->left, l + 1);
-		}
-
 	};
 
 }

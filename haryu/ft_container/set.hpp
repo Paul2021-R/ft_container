@@ -7,9 +7,6 @@
 #include "vector.hpp"
 
 namespace ft {
-
-
-
 	template<typename Key, typename Compare = ft::less<Key>, typename Allocator = std::allocator<Key> > class set {
 	public:
 		typedef Key														key_type;
@@ -40,7 +37,6 @@ namespace ft {
 		size_type					_size;
 
 	public:
-
 		tree_type* tree() { return _tree; }
 
 		set() : _allocator(Allocator()), _size(0) {

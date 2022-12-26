@@ -171,16 +171,16 @@ namespace ft {
 			this->template assign(other.begin(), other.end());
 		}
 
-		void print_vec() {
-		#include <iostream>
+		// void print_vec() {
+		// #include <iostream>
 
-		#define OUT std::cout
-		#define END std::endl
+		// #define OUT std::cout
+		// #define END std::endl
 
-		OUT << "size : " << this->size() << END;
-		OUT << "max size : "<< this->max_size() << END;
-		 OUT << "capacity : " << this->_capacity << END;
-		}
+		// OUT << "size : " << this->size() << END;
+		// OUT << "max size : "<< this->max_size() << END;
+		// OUT << "capacity : " << this->_capacity << END;
+		// }
 
 		vector &operator=(const vector &other) {
 			this->template assign(other.begin(), other.end());

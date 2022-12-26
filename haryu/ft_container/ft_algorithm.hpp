@@ -25,6 +25,11 @@ namespace ft {
 		typedef R 	result_type;
 	};
 
+	/**
+	 * @brief 함수 객체, 두개의 템플릿 타입 데이터를 집어 넣고, 순서대로 작고, 크다면 True를 반환함. 
+	 * 
+	 * @tparam T 
+	 */
 	template<typename T>
 	struct less: public binary_function<T, T, bool>
 	{
@@ -50,46 +55,46 @@ namespace ft {
 
 	template<>
 	struct __is_integral_helper<bool>
-			: public true_type { };
+			: public true_type {};
 
 	template<>
 	struct __is_integral_helper<char>
-			: public true_type { };
+			: public true_type {};
 
 	template<>
 	struct __is_integral_helper<signed char>
-			: public true_type { };
+			: public true_type {};
 
 	template<>
 	struct __is_integral_helper<unsigned char>
-			: public true_type { };
+			: public true_type {};
 
 	template<>
 	struct __is_integral_helper<short>
-			: public true_type { };
+			: public true_type {};
 
 	template<>
 	struct __is_integral_helper<unsigned short>
-			: public true_type { };
+			: public true_type {};
 
 	template<>
 	struct __is_integral_helper<int>
-			: public true_type { };
+			: public true_type {};
 
 	template<>
 	struct __is_integral_helper<unsigned int>
-			: public true_type { };
+			: public true_type {};
 
 	template<>
 	struct __is_integral_helper<long>
-			: public true_type { };
+			: public true_type {};
 
 	template<>
 	struct __is_integral_helper<unsigned long>
-			: public true_type { };
+			: public true_type {};
 
 	template <typename T>
-	struct is_integral : public __is_integral_helper<T> { };
+	struct is_integral : public __is_integral_helper<T> {};
 
 	template<bool B, class T = void>
 	struct enable_if {};
@@ -112,13 +117,12 @@ namespace ft {
 	template<class T, class U>
 	bool lexicographical_compare(T first1, T last1, U first2, U last2) {
 		while (first1 != last1) {
-
-			if (first2 == last2 || *first2 < *first1) return false;
-			else if (*first1 < *first2) return true;
-
+			if (first2 == last2 || *first2 < *first1) 
+				return false;
+			else if (*first1 < *first2)
+				return true;
 			++first1;
 			++first2;
-
 		}
 		return first2 != last2;
 	}
@@ -129,11 +133,12 @@ namespace ft {
 		typedef T1	first_type;
 		typedef T2	second_type;
 
-		T1	first;
-		T2	second;
+		first_type	first;
+		second_type	second;
 
 		pair() : first(), second() {};
 		pair(const T1& x, const T2& y) : first(x), second(y) {};
+
 		template<class U1, class U2>
 		pair(const pair<U1, U2>& p) : first(p.first), second(p.second) {};
 
