@@ -27,7 +27,7 @@ namespace ft {
 	public:
 
 		RBNode(const value_type &data = value_type(), Color color = RED)
-				: data(data), color(color), parent(nullptr), left(nullptr), right(nullptr) {};
+				: data(data), color(color), parent(NULL), left(NULL), right(NULL) {};
 
 		RBNode(const RBNode &other, const value_type &data)
 				: data(data), color(other.color), parent(other.parent), left(other.left), right(other.right) {}
@@ -53,7 +53,7 @@ namespace ft {
 		 */
 		node_pointer sibling() {
 			if (isRoot()) 
-				return nullptr;
+				return NULL;
 			if (isLeft()) 
 				return parent->right;
 			else 
@@ -62,13 +62,13 @@ namespace ft {
 
 		node_pointer uncle() {
 			if (isRoot()) 
-				return nullptr;
+				return NULL;
 			return parent->getSibling();
 		};
 
 		node_pointer grandparent() {
 			if (isRoot()) 
-				return nullptr;
+				return NULL;
 			return parent->parent;
 		};
 
@@ -96,7 +96,7 @@ namespace ft {
 		Compare compare;
 
 	public:
-		rbtree_iterator() : ptr(nullptr) {}
+		rbtree_iterator() : ptr(NULL) {}
 
 		rbtree_iterator(node_pointer ptr) : ptr(ptr) {}
 
@@ -198,12 +198,12 @@ namespace ft {
 
 	protected:
 		Color getColor(node_pointer node) {
-			if (node == nullptr) return BLACK;
+			if (node == NULL) return BLACK;
 			return node->color;
 		}
 
 		void setColor(node_pointer node, Color color) {
-			if (node == nullptr) return;
+			if (node == NULL) return;
 			node->color = color;
 		}
 
@@ -211,12 +211,12 @@ namespace ft {
 			node_pointer right_child = ptr->right;
 			ptr->right = right_child->left;
 
-			if (ptr->right != nullptr)
+			if (ptr->right != NULL)
 				ptr->right->parent = ptr;
 
 			right_child->parent = ptr->parent;
 
-			if (ptr->parent == nullptr)
+			if (ptr->parent == NULL)
 				_root = right_child;
 			else if (ptr == ptr->parent->left)
 				ptr->parent->left = right_child;
@@ -231,12 +231,12 @@ namespace ft {
 			node_pointer left_child = ptr->left;
 			ptr->left = left_child->right;
 
-			if (ptr->left != nullptr)
+			if (ptr->left != NULL)
 				ptr->left->parent = ptr;
 
 			left_child->parent = ptr->parent;
 
-			if (ptr->parent == nullptr)
+			if (ptr->parent == NULL)
 				_root = left_child;
 			else if (ptr == ptr->parent->left)
 				ptr->parent->left = left_child;
@@ -255,7 +255,7 @@ namespace ft {
 		 */
 		node_pointer minValueNode(node_pointer node) {
 			node_pointer ptr = node;
-			while (ptr->left != nullptr && !ptr->isNil())
+			while (ptr->left != NULL && !ptr->isNil())
 				ptr = ptr->left; // 가장 왼쪽 노드를 발견한다. 
 			return ptr;
 		}
@@ -268,14 +268,14 @@ namespace ft {
 		 */
 		node_pointer maxValueNode(node_pointer node) {
 			node_pointer ptr = node;
-			while (ptr->right != nullptr && !ptr->isNil())
+			while (ptr->right != NULL && !ptr->isNil())
 				ptr = ptr->right;
 			return ptr;
 		}
 
 		size_type getBlackHeight(node_pointer node) {
 			size_type height = 0;
-			while (node != nullptr) {
+			while (node != NULL) {
 				if (getColor(node) == BLACK)
 					height++;
 				node = node->left;
@@ -322,8 +322,8 @@ namespace ft {
 		}
 
 		void fixInsertRBTree(node_pointer ptr) {
-			node_pointer parent = nullptr;
-			node_pointer grandparent = nullptr;
+			node_pointer parent = NULL;
+			node_pointer grandparent = NULL;
 			while (ptr != _root && getColor(ptr) == RED && getColor(ptr->parent) == RED) {
 				parent = ptr->parent;
 				grandparent = parent->parent;
@@ -370,7 +370,7 @@ namespace ft {
 		}
 
 		node_pointer insertBST(node_pointer root, node_pointer ptr) {
-			if (root == nullptr || root->isNil()) // 노드가 없거나, 첫 노드로 끝날 때  
+			if (root == NULL || root->isNil()) // 노드가 없거나, 첫 노드로 끝날 때  
 				return ptr;
 			if (_comparator(ptr->data, root->data)) { // ptr의 데이터보다 root의 데이터가 크기가 큼 
 				root->left = insertBST(root->left, ptr);
@@ -473,11 +473,13 @@ namespace ft {
 		}
 
 		void removalNodeLeftRight(node_pointer node) {
-			if (!node || node->isNil()) 
+			if (!node) 
 				return;
-
-			removalNodeLeftRight(node->left);
-			removalNodeLeftRight(node->right);
+			if (!node->isNil())
+			{
+				removalNodeLeftRight(node->left);
+				removalNodeLeftRight(node->right);
+			}
 			_allocator.destroy(node);
 			_allocator.deallocate(node, 1);
 		}
@@ -494,7 +496,7 @@ namespace ft {
 			}
 
 			node_pointer current = _root;
-			while (current->left != nullptr) // 왼쪽 끝까지 간다.
+			while (current->left != NULL) // 왼쪽 끝까지 간다.
 				current = current->left;
 			_start = current; // 현재 기준이 되는 첫 시작 지점은 가장 왼쪽 노드이다.
 
@@ -502,23 +504,26 @@ namespace ft {
 				_allocator.construct(_end, node_type(value_type(), NIL));
 
 			current = _root;
-			while (current->right != nullptr && !current->right->isNil())
+			while (current->right != NULL && !current->right->isNil())
 				current = current->right;
-			current->right = _end; // 루트 기준 가장 오른쪽에 있는 노드 nullptr 혹은 NIL 위치까지 와서, end 노드 포인터를 집어 넣어준다. 
+			current->right = _end; // 루트 기준 가장 오른쪽에 있는 노드 NULL 혹은 NIL 위치까지 와서, end 노드 포인터를 집어 넣어준다. 
 			_end->parent = current; // end 의 노드의 부모에 current 노드 포인터를 대입
 		}
 
 	public:
 		RBTree(const allocator_type &alloc = allocator_type())
-				: _root(nullptr), _allocator(alloc), _end(nullptr), _start(nullptr) {
+				: _root(NULL), _allocator(alloc), _end(NULL), _start(NULL) {
 			_end = _allocator.allocate(1);
 			_allocator.construct(_end, node_type(value_type(), NIL)); 
 			// 기본 생성시 end 포인터로 집어넣고 duble black 으로 실제 값이 들어가지 않는 leaf node 를 생성한다. 
 		}
 
 		~RBTree() {
-			_allocator.destroy(_end);
-			_allocator.deallocate(_end, 1);
+			if (_end != NULL)
+			{
+				_allocator.destroy(_end);
+				_allocator.deallocate(_end, 1);
+			}
 		}
 
 		node_pointer insert(const value_type &data) {
@@ -540,7 +545,7 @@ namespace ft {
 
 		node_pointer find(const value_type &data) {
 			node_pointer current = _root;
-			while (current != nullptr && !current->isNil()) {
+			while (current != NULL && !current->isNil()) {
 				if (!_comparator(data, current->data) && !_comparator(current->data, data))
 					return current;
 				else if (_comparator(data, current->data))
@@ -553,8 +558,8 @@ namespace ft {
 
 		void clear() {
 			removalNodeLeftRight(_root);
-			_start = nullptr;
-			_end = nullptr;
+			_start = NULL;
+			_end = NULL;
 		}
 
 		size_type max_size() { return _allocator.max_size(); }

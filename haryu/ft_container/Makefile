@@ -33,12 +33,14 @@ fclean				:
 					rm -rf $(NAME)
 					rm -rf std_container
 					rm -rf $(SRCS_DIR)*.o
-					# rm -rf $(NAME).dSYM
+					rm -rf $(NAME).dSYM
+					rm -rf std_container.dSYM
 
 
 debug				:
 					$(info $(alret)====================  Debug $(NAME)  ====================$(reset))
-					$(CC) $(CFLAG) -g3 -fsanitize=address -o $(NAME) $(OBJS)
+					$(CC) $(CFLAG) -g3 -D DG=1 -o $(NAME) $(OBJS)
+					$(CC) $(CFLAG) -D STDMODE=1 -D DG=1 -o std_container $(OBJS)
 
 re					: fclean all
 					$(info $(green)====================  remake $(NAME)  ====================$(reset))

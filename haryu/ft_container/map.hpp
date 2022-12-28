@@ -86,6 +86,8 @@ namespace ft {
 
 		~map() {
 			clear();
+			_tree_allocator.destroy(_tree);
+			_tree_allocator.deallocate(_tree, 1);
 		}
 
 		map &operator=(const map &other) {

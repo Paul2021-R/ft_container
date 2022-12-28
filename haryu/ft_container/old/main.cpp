@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/23 15:52:45 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/28 19:37:58 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/28 18:49:07 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ public:
 };
 
 
-int main(int argc, char** argv) {
+int main_internal(int argc, char** argv) {
 
 #if STDMODE
 	printf("Standard Templete Library mode container program\n");
@@ -81,11 +81,6 @@ int main(int argc, char** argv) {
 	const int seed = atoi(argv[1]);
 	srand(seed);
 
-	ft::vector<std::string> vector_str;
-	ft::vector<int> vector_int;
-	ft::stack<int> stack_int;
-	ft::vector<Buffer> vector_buffer;
-	ft::stack<Buffer, std::deque<Buffer> > stack_deq_buffer;
 	ft::map<int, int> map_int;
 
 	time_t firstTime;
@@ -94,31 +89,6 @@ int main(int argc, char** argv) {
 	time(&firstTime);
 	std::cout << "Starting Time : " << firstTime << std::endl;
 	std::cout << "\n===========================================================" << std::endl;
-	for (int i = 0; i < COUNT; i++)
-	{
-		vector_buffer.push_back(Buffer());
-	}
-
-	for (int i = 0; i < COUNT; i++)
-	{
-		const int idx = rand() % COUNT;
-		vector_buffer[idx].idx = 5;
-	}
-	ft::vector<Buffer>().swap(vector_buffer);
-
-	try
-	{
-
-		for (int i = 0; i < COUNT; i++)
-		{
-			const int idx = rand() % COUNT;
-			vector_buffer.at(idx);
-			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
-		}
-	}
-	catch(const std::exception& e)
-	{ 	//NORMAL ! :P 
-	}
 	
 	for (int i = 0; i < COUNT; ++i)
 		map_int.insert(ft::make_pair(rand(), rand()));
@@ -133,16 +103,18 @@ int main(int argc, char** argv) {
 	{
 		ft::map<int, int> copy(map_int);
 	}
-	MutantStack<char> iterable_stack;
-	for (char letter = 'a'; letter <= 'z'; letter++)
-		iterable_stack.push(letter);
-	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
-		std::cout << *it;
 	std::cout << std::endl;
 	std::cout << "===========================================================\n" << std::endl;
 	time(&secondTime);
 	std::cout << "Finished Time : " << secondTime << std::endl;
 	std::cout << "Container performance Gap : " << secondTime - firstTime << std::endl;
+
+	return (0);
+}
+
+int main(int argc, char **argv)
+{
+	int result = main_internal(argc, argv);
 
 #if DG && STDMODE
 	system("leaks -list std_container");
@@ -152,5 +124,5 @@ int main(int argc, char** argv) {
 	std::cout << "normal mode testing" << std::endl;
 #endif
 
-	return (0);
+	return result;
 }
