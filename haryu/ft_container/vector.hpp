@@ -26,7 +26,7 @@ namespace ft {
 		pointer ptr;
 
 	public:
-		vector_iterator() : ptr(nullptr) {}
+		vector_iterator() : ptr(NULL) {}
 
 		vector_iterator(pointer ptr) : ptr(ptr) {}
 
@@ -145,14 +145,14 @@ namespace ft {
 	public:
 		explicit vector(const allocator_type &alloc = allocator_type()) :
 				_allocator(alloc),
-				_container(nullptr),
+				_container(NULL),
 				_capacity(0),
 				_size(0) {}
 
 		explicit vector(size_type n, const value_type &val = value_type(),
 						const allocator_type &alloc = allocator_type()) :
 				_allocator(alloc),
-				_container(nullptr),
+				_container(NULL),
 				_capacity(0),
 				_size(0) {
 			this->assign(n, val);
@@ -162,12 +162,12 @@ namespace ft {
 		template<typename U>
 		vector(U first, U last, const allocator_type &alloc = allocator_type(),
 			   typename ft::enable_if<!ft::is_integral<U>::value, U>::type * = 0) : _allocator(alloc),
-																					_container(nullptr), _capacity(0),
+																					_container(NULL), _capacity(0),
 																					_size(0) {
 			this->template assign(first, last);
 		}
 
-		vector(const vector &other) : _allocator(other._allocator), _container(nullptr), _capacity(0), _size(0) {
+		vector(const vector &other) : _allocator(other._allocator), _container(NULL), _capacity(0), _size(0) {
 			this->template assign(other.begin(), other.end());
 		}
 

@@ -7,7 +7,8 @@
 #include "vector.hpp"
 
 namespace ft {
-	template<typename Key, typename Compare = ft::less<Key>, typename Allocator = std::allocator<Key> > class set {
+	template<typename Key, typename Compare = ft::less<Key>, typename Allocator = std::allocator<Key> > 
+	class set {
 	public:
 		typedef Key														key_type;
 		typedef Key														value_type;

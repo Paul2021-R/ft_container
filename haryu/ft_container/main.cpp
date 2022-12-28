@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/23 15:52:45 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/28 19:37:58 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/28 22:46:38 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,9 @@
 #include <stdlib.h>
 #include <ctime>
 
+#define OUT std::cout
+#define END	std::endl
+
 #ifndef STDMODE 
 #define STDMODE 0
 #endif
@@ -24,11 +27,13 @@
 	#include <map>
 	#include <stack>
 	#include <vector>
+	#include <set>
 	namespace ft = std;
 #else
 	#include "map.hpp"
 	#include "stack.hpp"
 	#include "vector.hpp"
+	#include "set.hpp"
 #endif
 
 
@@ -73,9 +78,9 @@ int main(int argc, char** argv) {
 
 	if (argc != 2)
 	{
-		std::cerr << "Usage: ./test seed" << std::endl;
-		std::cerr << "Provide a seed please" << std::endl;
-		std::cerr << "Count value:" << COUNT << std::endl;
+		std::cerr << "Usage: ./test seed" << END;
+		std::cerr << "Provide a seed please" << END;
+		std::cerr << "Count value:" << COUNT << END;
 		return 1;
 	}
 	const int seed = atoi(argv[1]);
@@ -92,8 +97,8 @@ int main(int argc, char** argv) {
 	time_t secondTime;
 
 	time(&firstTime);
-	std::cout << "Starting Time : " << firstTime << std::endl;
-	std::cout << "\n===========================================================" << std::endl;
+	OUT << "Starting Time : " << firstTime << END;
+	OUT << "\n===========================================================" << END;
 	for (int i = 0; i < COUNT; i++)
 	{
 		vector_buffer.push_back(Buffer());
@@ -113,7 +118,7 @@ int main(int argc, char** argv) {
 		{
 			const int idx = rand() % COUNT;
 			vector_buffer.at(idx);
-			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<std::endl;
+			std::cerr << "Error: THIS VECTOR SHOULD BE EMPTY!!" <<END;
 		}
 	}
 	catch(const std::exception& e)
@@ -129,27 +134,38 @@ int main(int argc, char** argv) {
 		int access = rand();
 		sum += map_int[access];
 	}
-	std::cout << "should be constant with the same seed: " << sum << std::endl;
+	OUT << "should be constant with the same seed: " << sum << END;
 	{
 		ft::map<int, int> copy(map_int);
 	}
 	MutantStack<char> iterable_stack;
+
 	for (char letter = 'a'; letter <= 'z'; letter++)
 		iterable_stack.push(letter);
 	for (MutantStack<char>::iterator it = iterable_stack.begin(); it != iterable_stack.end(); it++)
-		std::cout << *it;
-	std::cout << std::endl;
-	std::cout << "===========================================================\n" << std::endl;
+		OUT << *it << END;
+
+	ft::set<char> setTest;
+	for(MutantStack<char>::iterator nit = iterable_stack.begin(); nit != iterable_stack.end(); nit++)
+	{
+		setTest.insert(*nit);
+	}
+	OUT << "set size : " << setTest.size() << END;
+	OUT << "set capacity : " << setTest.max_size() << END;
+	OUT << "===========================================================\n" << END;
 	time(&secondTime);
-	std::cout << "Finished Time : " << secondTime << std::endl;
-	std::cout << "Container performance Gap : " << secondTime - firstTime << std::endl;
+	OUT << "Finished Time : " << secondTime << END;
+	OUT << "Container performance Gap : " << secondTime - firstTime << END;
+
 
 #if DG && STDMODE
+	OUT << "<<Leaks Test STL Library>>" << END;
 	system("leaks -list std_container");
 #elif DG
+	OUT << "<<Leaks Test ft Library>>" << END;
 	system("leaks -list ft_container");
 #else
-	std::cout << "normal mode testing" << std::endl;
+	OUT << "normarl main program finished" << END;
 #endif
 
 	return (0);

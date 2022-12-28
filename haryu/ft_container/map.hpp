@@ -107,14 +107,14 @@ namespace ft {
 
 		T &at(const Key &key) {
 			node_pointer res = _tree->find(key);
-			if (res == nullptr) 
+			if (res == NULL) 
 				return res;
 			return res->data.second;
 		}
 
 		const T &at(const Key &key) const {
 			node_pointer res = _tree->find(key);
-			if (res == nullptr) 
+			if (res == NULL) 
 				return res;
 			return res->data.second;
 		}

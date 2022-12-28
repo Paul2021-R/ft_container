@@ -74,8 +74,8 @@ getYN () {
 
 printRes () {
 	# 1=file 2=compile 3=bin 4=output 5=std_compile
-	printf "%-35s: COMPILE: %s | RET: %s | OUT: %s | STD: [%s]\n" \
-		"$1" "$(getEmoji $2)" "$(getEmoji $3)" "$(getEmoji $4)" "$(getYN $5)"
+	printf "%-35s: COMPILE: %s | RET: %s | OUT: %s \n" \
+		"$1" "$(getEmoji $2)" "$(getEmoji $3)" "$(getEmoji $4)" 
 }
 
 # If diff_file empty, return 0 -> ok
@@ -162,7 +162,7 @@ do_test () {
 	test_files=$(find "${srcs}/${1}" -type f -name '*.cpp' | sort)
 
 	for file in ${test_files[@]}; do
-		printf " • "
+		printf "     • "
 		cmp_one "${file}"
 	done
 }
