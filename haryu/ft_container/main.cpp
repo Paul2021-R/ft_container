@@ -6,7 +6,7 @@
 /*   By: haryu <haryu@student.42seoul.kr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/23 15:52:45 by haryu             #+#    #+#             */
-/*   Updated: 2022/12/28 22:46:38 by haryu            ###   ########.fr       */
+/*   Updated: 2022/12/29 16:53:55 by haryu            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,9 @@ public:
 int main(int argc, char** argv) {
 
 #if STDMODE
-	printf("Standard Templete Library mode container program\n");
+	std::cout << "Standard Templete Library mode container program" << std::endl;
 #else
-	printf("Custom Standard Templete Library mode container program\n");
+	std::cout << "Custom Standard Templete Library mode container program" << std::endl;
 #endif 
 
 	if (argc != 2)
